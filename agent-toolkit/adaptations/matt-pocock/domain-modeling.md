@@ -14,14 +14,72 @@ Not discoverable from install; lock metadata: source `mattpocock/skills`, skill 
 
 ## Why adaptation was required
 
-The toolkit defaults to supervised, generic Markdown workflows and prohibits silent writes, commits, pushes, deployments, secret access, and automatic delegation. This skill contains assumptions that need wrapper guidance before use.
+The upstream skill assumes a root `CONTEXT.md` for domain glossary and context. This toolkit separates stable project context from domain terminology and uses generated project-local documentation paths.
 
-## Exact behavioral differences
+## Toolkit context mapping
 
-- Follow toolkit approval, git, model-selection, and secrets policies first.
-- Treat slash-command or sub-agent language as conceptual guidance, not a required proprietary interface.
-- Produce toolkit contracts under stable project paths when the active workflow requires them.
-- Do not commit, branch, deploy, mutate infrastructure, or write secrets unless separately approved.
+When upstream instructions mention `CONTEXT.md`, use this mapping unless the project defines a different one in `agent-project.yaml`:
+
+```text
+CONTEXT.md glossary/domain terms → docs/context/DOMAIN_MODEL.md
+CONTEXT.md broader project context → docs/context/PROJECT_CONTEXT.md
+ADRs → docs/adr/
+```
+
+The default project configuration paths are:
+
+```yaml
+paths:
+  context: docs/context/PROJECT_CONTEXT.md
+  domain_model: docs/context/DOMAIN_MODEL.md
+  adr: docs/adr
+```
+
+## Domain model behavior
+
+Use `docs/context/DOMAIN_MODEL.md` for:
+
+- canonical terms
+- glossary entries
+- domain relationships
+- business rules expressed without implementation details
+- ambiguous or overloaded terminology that has been resolved
+
+Do not turn the domain model into:
+
+- an implementation spec
+- a scratchpad
+- a task list
+- a code architecture document
+- a place for secrets or environment details
+
+## Project context behavior
+
+Use `docs/context/PROJECT_CONTEXT.md` for:
+
+- repository purpose
+- high-level architecture summary
+- important integrations by name only
+- operating constraints
+- known non-secret project conventions
+- links to specs, ADRs, runbooks, or external docs
+
+Do not store credentials, account IDs, private customer data, or `.env` values.
+
+## ADR behavior
+
+Use `docs/adr/` for decisions that are hard to reverse, surprising without context, and the result of a real trade-off. Do not create ADRs for routine implementation details.
+
+## Approval and write rules
+
+- Domain/context updates are file writes and require approval unless the active workflow already approved those artifacts.
+- Before writing, state the exact terms or decisions being added and which files will change.
+- Prefer small, immediate updates when terminology is resolved.
+- If a term is still ambiguous, record it as an open question in the active spec/report instead of canonizing it.
+
+## Personalization hooks
+
+Projects may override paths in `agent-project.yaml`. Personal terminology preferences or glossary style can be documented in `.agent-config/overrides/`, but the canonical project-wide terms should live in `docs/context/DOMAIN_MODEL.md`.
 
 ## Maintenance notes
 

@@ -121,6 +121,8 @@ AGENTS.md
 docs/context/
 ```
 
+If `.gitignore` already exists, the initializer appends an Agent Toolkit block for local/runtime agent files such as `.agent-work/` and `.agent-config/` so they are not accidentally tracked.
+
 ## Git subtree notes
 
 A subtree/vendor-copy can work, but updates are harder to reason about. `update_toolkit.py` detects subtree-like copies and prints manual guidance rather than changing files automatically.

@@ -20,6 +20,22 @@ Use when the user asks to platformize project or when the architect selects this
 - Approval mode and git policy are known.
 - Required artifacts are identified.
 
+## Personalization and context loading
+
+At workflow start, read `agent-project.yaml` if present, especially `paths`, `commands`, `approvals`, `git`, `security`, `models`, and `personalization`.
+
+Load only override files relevant to the current workflow and phase. Do not load every `.agent-config/overrides/` file by default.
+
+Common overrides for this workflow:
+
+- `.agent-config/overrides/personal.md`
+- `.agent-config/overrides/testing.md`
+- `.agent-config/overrides/wizards.md`
+- `.agent-config/overrides/secrets.md`
+- `.agent-config/overrides/git.md`
+
+Project overrides are advisory within toolkit policy. They may specialize communication style, commands, paths, severity calibration, or workflow preferences, but they must not silently weaken approval, Git, safety, or secrets rules.
+
 ## Roles involved
 
 Architect plus role specialists as needed. Do not invoke unnecessary specialists.

@@ -41,6 +41,25 @@ paths:
   runbooks: docs/runbooks
   temporary_work: .agent-work
   local_overrides: .agent-config
+personalization:
+  # Keep these files non-secret. Agents should read only the override files relevant to the active task.
+  enabled: true
+  profile: agent-toolkit/profiles/personal/sahil.md
+  personal_preferences: .agent-config/overrides/personal.md
+  git_preferences: .agent-config/overrides/git.md
+  testing_preferences: .agent-config/overrides/testing.md
+  review_preferences: .agent-config/overrides/review.md
+  debugging_preferences: .agent-config/overrides/debugging.md
+  specs_preferences: .agent-config/overrides/specs.md
+  tickets_preferences: .agent-config/overrides/tickets.md
+  tracking_preferences: .agent-config/overrides/tracking.md
+  context_preferences: .agent-config/overrides/context.md
+  research_preferences: .agent-config/overrides/research.md
+  prototype_preferences: .agent-config/overrides/prototypes.md
+  architecture_review_preferences: .agent-config/overrides/architecture-review.md
+  wizard_preferences: .agent-config/overrides/wizards.md
+  secrets_preferences: .agent-config/overrides/secrets.md
+  writing_for_agents_preferences: .agent-config/overrides/writing-for-agents.md
 models:
   economical: null
   standard: null

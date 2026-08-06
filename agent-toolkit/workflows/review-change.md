@@ -2,61 +2,72 @@
 
 ## Goal
 
-Provide a supervised, reusable workflow for `review-change` outcomes.
+Review a diff, branch, commit range, or PR working tree against specs, standards, risk, and validation evidence.
 
 ## Appropriate use cases
 
-Use when the user asks to review change or when the architect selects this as the minimum sufficient workflow.
+Use for uncommitted diff review, branch comparison, commit-range review, PR review, or post-implementation quality gates.
 
 ## Inputs
 
-- User objective and constraints.
-- Project configuration and context docs.
-- Relevant specs, diffs, bug reports, logs, or platform details.
+- Review target and fixed point
+- Spec/ticket/source issue if any
+- Standards, `AGENTS.md`, `agent-project.yaml`, overrides, reports
 
 ## Preconditions
 
-- Repository has been inspected read-only.
-- Approval mode and git policy are known.
-- Required artifacts are identified.
+- Review scope is clear or the reviewer asks for a fixed point.
+- Git inspection is allowed by policy.
+
+## Personalization and context loading
+
+Load only relevant overrides:
+
+- `.agent-config/overrides/personal.md`
+- `.agent-config/overrides/review.md`
+- `.agent-config/overrides/testing.md`
+- `.agent-config/overrides/git.md`
+- `.agent-config/overrides/secrets.md`
 
 ## Roles involved
 
-Architect plus role specialists as needed. Do not invoke unnecessary specialists.
+Quality Engineer.
 
 ## Optional roles
 
-Application Engineer, Quality Engineer, Platform Engineer, Production Readiness Engineer depending on scope.
+Platform Engineer for Docker/CI/CD/deployment changes. Production Readiness Engineer for release-impacting changes. Architect for spec ambiguity.
 
 ## Ordered phases
 
-1. Determine review scope
-2. Identify spec and standards sources
-3. Review by relevant roles
-4. Group findings by severity
-5. Human approves remediation if any
-6. Final review report
+1. **Pin scope** — Identify diff command/range and verify it resolves.
+2. **Find source of truth** — Locate spec/ticket and standards.
+3. **Classify relevance** — Decide whether platform/production/security review is needed.
+4. **Review** — Check spec compliance, standards, tests, risks, secrets, and platform impact.
+5. **Report** — Produce `review-report.md`, grouping findings by severity and type.
+6. **Remediation approval** — Stop before edits.
+7. **Verification** — If remediation is approved, verify fixes and update report.
 
 ## Approval gates
 
-Approval is required before each major phase transition and before any meaningful state change.
+Broad validation, env/secret access, remediation, Git operations, destructive commands.
 
 ## Required artifacts
 
-Use contracts from `agent-toolkit/contracts/`, especially specifications, reports, handoffs, and model execution plans.
+- `review-report.md`
+- `handoff-report.md` for follow-up sessions
 
 ## Model-selection considerations
 
-Use the lowest reliable tier. Reserve high-reasoning for architecture, complex debugging, security, irreversible choices, and high-risk final review. Reuse artifacts to avoid repeated full scans.
+Use fast review for small diffs, standard for normal reviews, high reasoning for security/architecture/high-risk releases, and long context for broad diffs.
 
 ## Cost-control rules
 
-Bound repository scans, avoid duplicate specialist sessions, summarize durable findings, and ask before materially increasing session count or model tier.
+Review only the requested scope. Avoid re-running expensive checks unless they change the verdict.
 
 ## Failure and rollback behavior
 
-Stop on unexpected state, failed validation, missing approval, or irreversible risk. Report partial work and do not attempt destructive rollback without approval.
+If scope or spec is missing, report limitations instead of guessing. Do not remediate without approval.
 
 ## Completion criteria
 
-The final contract is complete, validations are reported, risks and limitations are disclosed, and the recommended next action is clear.
+Review is complete when verdict, scope, evidence, findings, required remediation, optional improvements, overrides consulted, and next action are clear.

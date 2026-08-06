@@ -14,14 +14,67 @@ Not discoverable from install; lock metadata: source `mattpocock/skills`, skill 
 
 ## Why adaptation was required
 
-The toolkit defaults to supervised, generic Markdown workflows and prohibits silent writes, commits, pushes, deployments, secret access, and automatic delegation. This skill contains assumptions that need wrapper guidance before use.
+The upstream skill says to always resolve, never abort, stage, and commit. This toolkit keeps Git strategy under user control. Merge/rebase conflict resolution can be high-risk, so resolving, aborting, staging, committing, or continuing a rebase all require explicit user approval.
 
-## Exact behavioral differences
+## Toolkit conflict-resolution behavior
 
-- Follow toolkit approval, git, model-selection, and secrets policies first.
-- Treat slash-command or sub-agent language as conceptual guidance, not a required proprietary interface.
-- Produce toolkit contracts under stable project paths when the active workflow requires them.
-- Do not commit, branch, deploy, mutate infrastructure, or write secrets unless separately approved.
+Use the upstream investigation discipline:
+
+- inspect merge/rebase state
+- inspect conflicting files
+- understand both sides' intent
+- preserve both intents where compatible
+- avoid inventing new behavior
+- validate after resolution
+
+But use this supervised flow:
+
+1. Inspect Git state read-only with approved-safe commands such as `git status`, `git diff`, and `git log` when permitted.
+2. List conflicted files and summarize each conflict's likely intent.
+3. Identify whether the operation is a merge, rebase, cherry-pick, revert, or other state.
+4. Present resolution options, including risks and reversibility.
+5. Ask the user whether to resolve, pause, or abort/continue using their chosen Git strategy.
+6. Only edit conflict files after approval.
+7. Run approved validation commands.
+8. Produce a handoff or implementation report with files changed, conflicts resolved, commands run, tests run, risks, and exact next action.
+
+## Git behavior override
+
+Do not perform these actions unless separately approved:
+
+- `git merge --abort`
+- `git rebase --abort`
+- `git rebase --continue`
+- `git cherry-pick --continue`
+- `git add`
+- `git commit`
+- `git push`
+- creating branches or worktrees
+- deleting files solely to resolve conflicts
+
+If a commit is needed, suggest the command and message rather than running it.
+
+## Resolution policy
+
+When both sides are compatible, preserve both intents. When they conflict, explain the trade-off and ask which behavior should win unless the active merge goal makes it unambiguous.
+
+Never resolve by blindly accepting ours/theirs across a file. If using ours/theirs for a hunk, explain why that hunk's intent should win.
+
+## Validation policy
+
+Discover project checks from `agent-project.yaml` and repository files. Ask before broad or expensive checks. Report commands exactly as run and include failures honestly.
+
+## Personalization hooks
+
+Projects may document preferred merge strategy in:
+
+```text
+AGENTS.md
+agent-project.yaml
+.agent-config/overrides/git.md
+```
+
+Examples: current-branch only, feature branches, worktrees for parallel agents, squash merges, or rebase preference.
 
 ## Maintenance notes
 

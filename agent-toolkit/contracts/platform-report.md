@@ -1,5 +1,10 @@
 # Platform Report
 
+
+## Personalization/overrides consulted
+
+List relevant `.agent-config/overrides/` files read for this task, or state `None consulted` with a brief reason. Do not include secret values.
+
 ## Current state
 
 _TBD._

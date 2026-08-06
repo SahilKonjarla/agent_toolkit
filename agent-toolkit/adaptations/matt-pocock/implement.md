@@ -14,14 +14,74 @@ Not discoverable from install; lock metadata: source `mattpocock/skills`, skill 
 
 ## Why adaptation was required
 
-The toolkit defaults to supervised, generic Markdown workflows and prohibits silent writes, commits, pushes, deployments, secret access, and automatic delegation. This skill contains assumptions that need wrapper guidance before use.
+The upstream skill says to commit work to the current branch. This toolkit keeps Git strategy under user control and prohibits commits, pushes, branch creation, worktree creation, merges, and PR actions unless explicitly approved.
 
-## Exact behavioral differences
+## Toolkit implementation behavior
 
-- Follow toolkit approval, git, model-selection, and secrets policies first.
-- Treat slash-command or sub-agent language as conceptual guidance, not a required proprietary interface.
-- Produce toolkit contracts under stable project paths when the active workflow requires them.
-- Do not commit, branch, deploy, mutate infrastructure, or write secrets unless separately approved.
+Use the upstream implementation discipline, especially:
+
+- implement from an approved spec or ticket
+- prefer TDD where practical
+- run focused checks regularly
+- run broad checks only when approved
+- review the work before declaring completion
+
+But replace the upstream commit behavior with this supervised flow:
+
+1. Confirm there is an approved specification, ticket, bug diagnosis, or explicit implementation scope.
+2. State the planned files/areas to inspect or modify.
+3. Request approval before writing files if approval has not already been granted for this scope.
+4. Implement in small vertical slices.
+5. Add or update tests for behavioral changes.
+6. Run approved validation commands.
+7. Produce `agent-toolkit/contracts/implementation-report.md`.
+8. Stop for user review. Do not commit unless the user separately approves a commit.
+
+## Git behavior override
+
+Do not perform these actions as part of implementation unless separately approved:
+
+- create branch
+- create worktree
+- stage files
+- commit
+- push
+- merge
+- open or update pull request
+
+If a commit would be useful, suggest a commit message in the implementation report instead of committing.
+
+## Testing behavior
+
+Use `agent-project.yaml` commands when available. If commands are unknown, inspect the repository first. Do not invent test commands. Ask before broad, slow, expensive, or potentially destructive test runs.
+
+For TDD, agree on seams before writing tests. Prefer tests that verify behavior through public interfaces and avoid implementation-coupled assertions.
+
+## Required implementation report
+
+Use `agent-toolkit/contracts/implementation-report.md` and include:
+
+- Summary
+- Files changed
+- Decisions made
+- Commands run
+- Tests run
+- Deviations from specification
+- Known limitations
+- Open questions
+- Suggested commit message, if useful
+
+## Personalization hooks
+
+Project-specific implementation preferences belong in:
+
+```text
+AGENTS.md
+agent-project.yaml
+.agent-config/overrides/
+```
+
+Useful customizations include preferred test commands, code style conventions, package manager, branching policy, and whether the user wants commit-message suggestions.
 
 ## Maintenance notes
 

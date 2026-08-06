@@ -1,38 +1,45 @@
 # Handoff Report
 
+## Personalization/overrides consulted
+
+List relevant `.agent-config/overrides/` files read for this task, or state `None consulted` with a brief reason. Do not include secret values.
+
 ## Objective
 
-_TBD._
+What the next session is trying to accomplish.
 
 ## Current status
 
-_TBD._
+Where the work stands now.
 
 ## Completed work
 
-_TBD._
+What has already been done, with artifact paths.
 
 ## Important decisions
 
-_TBD._
+Decisions made and links to specs/ADRs/reports.
 
 ## Relevant files
 
-_TBD._
+Paths the next agent should inspect first.
 
 ## Commands and results
 
-_TBD._
+Exact commands run and summarized outcomes.
 
 ## Remaining work
 
-_TBD._
+Concrete unfinished tasks.
 
 ## Risks
 
-_TBD._
+Known risks, blockers, uncertainties, and approval gates.
 
 ## Exact next action
 
-_TBD._
+The next single action a fresh session should take.
 
+## Suggested skills/roles
+
+Recommended agent role and imported skill adaptations to consult.

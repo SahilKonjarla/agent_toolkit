@@ -1,58 +1,64 @@
 # Feature Specification
 
+## Personalization/overrides consulted
+
+List relevant `.agent-config/overrides/` files read for this task, or state `None consulted` with a brief reason. Do not include secret values.
+
 ## Goal
 
-_TBD._
+One concise paragraph describing the outcome from the user's perspective.
 
 ## Background
 
-_TBD._
+Relevant context, domain terms, links to prior specs/ADRs, and why this matters now.
 
 ## Scope
 
-_TBD._
+What is included. Prefer bullets that are observable or testable.
 
 ## Out of scope
 
-_TBD._
+Explicit exclusions and future work.
 
 ## Current behavior
 
-_TBD._
+How the system behaves today, with evidence where available.
 
 ## Proposed behavior
 
-_TBD._
+How the system should behave after the change.
 
 ## User flows
 
-_TBD._
+Primary and edge-case flows. Use domain language from `docs/context/DOMAIN_MODEL.md`.
 
 ## API/data contracts
 
-_TBD._
+Public APIs, events, schemas, migrations, compatibility expectations, or `None`.
 
 ## Acceptance criteria
 
-_TBD._
+- [ ] Criterion 1
+- [ ] Criterion 2
+
+Criteria must be specific enough for Quality to verify.
 
 ## Nonfunctional requirements
 
-_TBD._
+Performance, reliability, security, accessibility, observability, compatibility, or operational constraints.
 
 ## Risks
 
-_TBD._
+Technical, product, security, platform, cost, and reversibility risks.
 
 ## Open questions
 
-_TBD._
+Questions that must be resolved before implementation, or explicitly safe assumptions.
 
 ## Required roles
 
-_TBD._
+Architect, Application Engineer, Quality Engineer, Platform Engineer, Production Readiness Engineer as needed.
 
 ## Proposed model plan
 
-_TBD._
-
+Capability tiers by phase, estimated sessions, and escalation triggers.

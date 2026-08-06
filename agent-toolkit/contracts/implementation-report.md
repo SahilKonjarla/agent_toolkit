@@ -1,34 +1,49 @@
 # Implementation Report
 
+## Personalization/overrides consulted
+
+List relevant `.agent-config/overrides/` files read for this task, or state `None consulted` with a brief reason. Do not include secret values.
+
 ## Summary
 
-_TBD._
+Briefly describe what changed and why.
 
 ## Files changed
 
-_TBD._
+- `path`: purpose of change
+
+## Behavior implemented
+
+User-visible behavior or internal capability delivered.
 
 ## Decisions made
 
-_TBD._
+Important implementation choices and why they fit existing patterns.
 
 ## Commands run
 
-_TBD._
+List exact commands and outcomes. If none, say `None run` and why.
 
 ## Tests run
 
-_TBD._
+List exact test commands and results. If skipped, explain why and what should be run next.
 
 ## Deviations from specification
 
-_TBD._
+Any approved or unapproved deviations. If none, say `None`.
 
 ## Known limitations
 
-_TBD._
+Remaining gaps, edge cases, or deferred work.
 
-## Open questions
+## Remaining risks
 
-_TBD._
+Risks after implementation and validation.
 
+## Suggested commit message
+
+Optional. Suggest only; do not commit unless approved.
+
+## Recommended next step
+
+Review, remediation, run additional checks, or ready for user action.

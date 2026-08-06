@@ -23,6 +23,38 @@ class InitProjectTests(unittest.TestCase):
             root=Path(td); (root/'AGENTS.md').write_text('existing')
             self.assertEqual(mod.main(['--root', str(root), '--yes']), 1)
             self.assertEqual((root/'AGENTS.md').read_text(), 'existing')
+    def test_generated_personalization_overrides(self):
+        if mod.yaml is None: self.skipTest('PyYAML missing')
+        import tempfile
+        with tempfile.TemporaryDirectory() as td:
+            root=Path(td); cfg=mod.default_config(root)
+            files=mod.generated_files(root, cfg)
+            self.assertIn(Path('.agent-config/overrides/personal.md'), files)
+            self.assertIn(Path('.agent-config/overrides/testing.md'), files)
+            self.assertTrue(cfg.personalization['enabled'])
+
+    def test_generated_agents_md_is_rich(self):
+        import tempfile
+        with tempfile.TemporaryDirectory() as td:
+            cfg=mod.default_config(Path(td))
+            content=mod.generated_agents_md(cfg)
+            self.assertIn('## Personalization overrides', content)
+            self.assertIn('## Source-of-truth paths', content)
+            self.assertIn('## Approval policy', content)
+            self.assertIn('.agent-config/overrides/testing.md', content)
+
+    def test_gitignore_update_existing_file_only(self):
+        import tempfile
+        with tempfile.TemporaryDirectory() as td:
+            root=Path(td); cfg=mod.default_config(root)
+            self.assertFalse(mod.gitignore_needs_update(root, cfg))
+            (root/'.gitignore').write_text('node_modules/\n')
+            self.assertTrue(mod.gitignore_needs_update(root, cfg))
+            mod.update_gitignore(root, cfg)
+            text=(root/'.gitignore').read_text()
+            self.assertIn('.agent-work/', text)
+            self.assertIn('.agent-config/', text)
+
     def test_secret_warning_regex(self):
         self.assertIsNotNone(mod.SECRET_RE.search('api_key: abc123'))
 if __name__ == '__main__': unittest.main()
