@@ -1,0 +1,73 @@
+project:
+  name: Example App
+  client: Example Org
+  description: Example initialized project configuration.
+  repository_type: application
+  stage: development
+stack:
+  backend:
+    language: python
+    framework: fastapi
+    package_manager: pip
+  frontend:
+    language: typescript
+    framework: nextjs
+    package_manager: pnpm
+  database:
+    engine: postgres
+    migrations: alembic
+  jobs:
+    framework: null
+    broker: null
+  testing:
+    unit: pytest
+    integration: null
+    e2e: playwright
+commands:
+  install: pnpm install && python -m pip install -r requirements.txt
+  start: pnpm dev
+  format: null
+  lint: pnpm lint
+  typecheck: pnpm typecheck
+  test_unit: pytest
+  test_integration: null
+  test_e2e: pnpm test:e2e
+  build: pnpm build
+  container_build: docker build -t example-app .
+platform:
+  docker: true
+  ci_provider: github-actions
+  deployment_target: null
+  environments: [development, staging, production]
+  observability: []
+  secrets_manager: null
+  infrastructure_as_code: null
+tracking:
+  provider: auto
+  fallback: local_markdown
+paths:
+  context: docs/context/PROJECT_CONTEXT.md
+  domain_model: docs/context/DOMAIN_MODEL.md
+  adr: docs/adr
+  specs: docs/specs
+  runbooks: docs/runbooks
+  temporary_work: .agent-work
+  local_overrides: .agent-config
+models:
+  economical: null
+  standard: null
+  high_reasoning: null
+  long_context: null
+  fast_review: null
+approvals:
+  mode: supervised
+git:
+  agent_managed: false
+  allow_commit: false
+security:
+  allow_env_file_access: false
+  store_secret_values: false
+herdr:
+  enabled: false
+  manual_sessions_only: true
+  automatic_delegation: false

@@ -1,0 +1,72 @@
+# Project-specific agent toolkit configuration. Do not store secret values here.
+project:
+  name: ""
+  client: ""
+  description: ""
+  repository_type: "application"
+  stage: "development"
+stack:
+  backend: {language: null, framework: null, package_manager: null}
+  frontend: {language: null, framework: null, package_manager: null}
+  database: {engine: null, migrations: null}
+  jobs: {framework: null, broker: null}
+  testing: {unit: null, integration: null, e2e: null}
+commands:
+  install: null
+  start: null
+  format: null
+  lint: null
+  typecheck: null
+  test_unit: null
+  test_integration: null
+  test_e2e: null
+  build: null
+  container_build: null
+platform:
+  docker: false
+  ci_provider: null
+  deployment_target: null
+  environments: []
+  observability: []
+  secrets_manager: null
+  infrastructure_as_code: null
+tracking:
+  provider: auto
+  fallback: local_markdown
+paths:
+  context: docs/context/PROJECT_CONTEXT.md
+  domain_model: docs/context/DOMAIN_MODEL.md
+  adr: docs/adr
+  specs: docs/specs
+  runbooks: docs/runbooks
+  temporary_work: .agent-work
+  local_overrides: .agent-config
+models:
+  economical: null
+  standard: null
+  high_reasoning: null
+  long_context: null
+  fast_review: null
+approvals:
+  mode: supervised
+  require_before: [file_writes, workflow_phase_transition, dependencies, migrations, api_contract_changes, tests, env_access, git_operations, platform_changes, infrastructure_changes, deployments, destructive_commands, remediation]
+git:
+  agent_managed: false
+  allow_status: true
+  allow_diff: true
+  allow_log: true
+  allow_branch_suggestions: true
+  allow_branch_creation: false
+  allow_worktree_creation: false
+  allow_commit: false
+  allow_push: false
+  allow_merge: false
+security:
+  allow_env_file_access: false
+  store_secret_values: false
+  redact_secrets_in_reports: true
+  include_secrets_in_handoffs: false
+herdr:
+  enabled: false
+  manual_sessions_only: true
+  automatic_delegation: false
