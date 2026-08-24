@@ -14,6 +14,22 @@ except ModuleNotFoundError:  # graceful required-dependency error
 SECRET_RE=re.compile(r'(api[_-]?key|secret|token|password|passwd|private[_-]?key)\s*[:=]\s*[^\s]+', re.I)
 
 @dataclass
+class SkillSyncResult:
+    linked: list[str]
+    repaired: list[str]
+    unchanged: list[str]
+    removed: list[str]
+    preserved: list[str]
+    warnings: list[str]
+    skills_dir: Path
+    toolkit_root: Path
+
+    @property
+    def managed(self) -> list[str]:
+        return sorted(set(self.linked + self.repaired + self.unchanged))
+
+
+@dataclass
 class ProjectConfig:
     project: dict[str, Any]
     stack: dict[str, Any]
@@ -279,6 +295,149 @@ def generated_files(root: Path, cfg: ProjectConfig) -> dict[Path,str]:
         files[overrides_dir/name] = content
     return files
 
+def find_toolkit_root(start: Path | None = None) -> Path:
+    """Find the toolkit checkout that owns this initializer."""
+    candidates: list[Path] = []
+    if start is not None:
+        candidates.append(start.resolve())
+    here = Path(__file__).resolve()
+    candidates.extend([here.parents[1], here.parents[2]])
+    seen: set[Path] = set()
+    for base in candidates:
+        for p in (base, *base.parents):
+            if p in seen:
+                continue
+            seen.add(p)
+            if (p / 'skills-lock.json').exists() or (p / '.agents' / 'skills').exists():
+                return p
+            if (p / 'agent-toolkit' / 'skills-lock.json').exists() or (p / 'agent-toolkit' / '.agents' / 'skills').exists():
+                return p / 'agent-toolkit'
+    return here.parents[1]
+
+
+def find_project_root(requested_root: Path, toolkit_root: Path) -> Path:
+    root = requested_root.resolve()
+    toolkit = toolkit_root.resolve()
+    if root == toolkit or toolkit in (root, *root.parents):
+        return toolkit.parent
+    return root
+
+
+def read_enabled_skill_names(toolkit_root: Path) -> tuple[list[str], list[str]]:
+    warnings: list[str] = []
+    lock = toolkit_root / 'skills-lock.json'
+    if not lock.exists() and (toolkit_root.parent / 'skills-lock.json').exists():
+        lock = toolkit_root.parent / 'skills-lock.json'
+    if lock.exists():
+        try:
+            data = json.loads(lock.read_text(encoding='utf-8'))
+            skills = data.get('skills', {})
+            if isinstance(skills, dict):
+                return sorted(skills), warnings
+            warnings.append(f'{lock}: expected "skills" object; falling back to discovered skill directories')
+        except Exception as e:
+            warnings.append(f'{lock}: cannot read skills lock ({e}); falling back to discovered skill directories')
+    skills_dir = toolkit_skills_dir(toolkit_root)
+    if not skills_dir.exists():
+        return [], warnings + [f'{skills_dir}: toolkit skills directory not found']
+    return sorted(p.name for p in skills_dir.iterdir() if p.is_dir()), warnings
+
+
+def toolkit_skills_dir(toolkit_root: Path) -> Path:
+    if (toolkit_root / '.agents' / 'skills').exists():
+        return toolkit_root / '.agents' / 'skills'
+    if (toolkit_root.parent / '.agents' / 'skills').exists():
+        return toolkit_root.parent / '.agents' / 'skills'
+    return toolkit_root / '.agents' / 'skills'
+
+
+def manifest_path(root: Path, cfg: ProjectConfig) -> Path:
+    return safe_inside(root, Path(cfg.paths.get('local_overrides', '.agent-config')) / 'managed-skills.json')
+
+
+def load_managed_manifest(root: Path, cfg: ProjectConfig) -> list[str]:
+    path = manifest_path(root, cfg)
+    if not path.exists():
+        return []
+    try:
+        data = json.loads(path.read_text(encoding='utf-8'))
+        managed = data.get('managed', [])
+        return sorted(x for x in managed if isinstance(x, str)) if isinstance(managed, list) else []
+    except Exception:
+        return []
+
+
+def symlink_points_to(path: Path, target: Path) -> bool:
+    try:
+        return path.is_symlink() and path.resolve(strict=False) == target.resolve(strict=False)
+    except OSError:
+        return False
+
+
+def sync_skills(root: Path, cfg: ProjectConfig, toolkit_root: Path | None = None, dry_run: bool = False) -> SkillSyncResult:
+    toolkit_root = (toolkit_root or find_toolkit_root()).resolve()
+    skills_dir = safe_inside(root, Path('.agents') / 'skills')
+    canonical_dir = toolkit_skills_dir(toolkit_root)
+    linked: list[str] = []
+    repaired: list[str] = []
+    unchanged: list[str] = []
+    removed: list[str] = []
+    warnings: list[str] = []
+    enabled, lock_warnings = read_enabled_skill_names(toolkit_root)
+    warnings.extend(lock_warnings)
+    previous = set(load_managed_manifest(root, cfg))
+    valid: set[str] = set()
+    if not dry_run:
+        skills_dir.mkdir(parents=True, exist_ok=True)
+    for name in enabled:
+        source = canonical_dir / name
+        if not source.is_dir() or not (source / 'SKILL.md').is_file():
+            warnings.append(f'{name}: configured toolkit skill missing or invalid at {source}')
+            continue
+        valid.add(name)
+        dest = skills_dir / name
+        rel_target = os.path.relpath(source, start=skills_dir)
+        if dest.exists() or dest.is_symlink():
+            if symlink_points_to(dest, source):
+                unchanged.append(name)
+            elif dest.is_symlink() and name in previous:
+                if not dry_run:
+                    dest.unlink(); dest.symlink_to(rel_target, target_is_directory=True)
+                repaired.append(name)
+            else:
+                warnings.append(f'Cannot expose toolkit skill "{name}": {dest} already exists and is not a toolkit-managed symlink.')
+            continue
+        if not dry_run:
+            dest.symlink_to(rel_target, target_is_directory=True)
+        linked.append(name)
+    for name in sorted(previous - valid):
+        dest = skills_dir / name
+        if dest.is_symlink():
+            if not dry_run:
+                dest.unlink()
+            removed.append(name)
+        elif dest.exists():
+            warnings.append(f'{name}: previously toolkit-managed path is no longer a symlink; leaving {dest} untouched')
+    managed_now = sorted(set(linked + repaired + unchanged))
+    preserved: list[str] = []
+    if skills_dir.exists():
+        for p in skills_dir.iterdir():
+            if p.name not in managed_now and p.name not in removed:
+                preserved.append(p.name)
+    if not dry_run:
+        atomic_write(manifest_path(root, cfg), json.dumps({'managed': managed_now}, indent=2) + '\n')
+    return SkillSyncResult(linked, repaired, unchanged, removed, sorted(preserved), warnings, skills_dir, toolkit_root)
+
+
+def validate_skill_structure(result: SkillSyncResult) -> list[str]:
+    errs: list[str] = []
+    for name in result.managed:
+        p = result.skills_dir / name
+        if not p.is_symlink() or not (p.resolve(strict=False) / 'SKILL.md').exists():
+            errs.append(f'invalid skill link {p}')
+    return errs
+
+
 def validate(root: Path, cfg: ProjectConfig) -> list[str]:
     require_yaml(); errs=[]
     yaml.safe_load((root/'agent-project.yaml').read_text())
@@ -287,27 +446,88 @@ def validate(root: Path, cfg: ProjectConfig) -> list[str]:
     if SECRET_RE.search((root/'agent-project.yaml').read_text()): errs.append('secret-like value in agent-project.yaml')
     return errs
 
-def main(argv: list[str]|None=None) -> int:
-    ap=argparse.ArgumentParser(); ap.add_argument('--config', type=Path); ap.add_argument('--quick', action='store_true'); ap.add_argument('--dry-run', action='store_true'); ap.add_argument('--yes', action='store_true'); ap.add_argument('--root', type=Path, default=Path.cwd())
-    a=ap.parse_args(argv); root=a.root.resolve()
+def print_summary(root: Path, cfg: ProjectConfig, result: SkillSyncResult, generated: list[str], existing: list[str]) -> None:
+    print('\nAgent Toolkit initialized')
+    print('\nProject')
+    print(f'  {cfg.project.get("name") or root.name}')
+    print('\nToolkit')
     try:
-        cfg=load_config(a.config, root) if a.config else default_config(root, a.quick)
+        print(f'  {result.toolkit_root.relative_to(root)}')
+    except ValueError:
+        print(f'  {result.toolkit_root}')
+    print('\nGenerated')
+    for item in ['AGENTS.md', cfg.paths.get('local_overrides', '.agent-config') + '/', cfg.paths.get('temporary_work', '.agent-work') + '/', '.agents/skills/']:
+        print(f'  ✓ {item}')
+    if existing:
+        print('\nExisting project files preserved')
+        for p in existing[:8]: print(f'  ✓ {p}')
+        if len(existing) > 8: print(f'  … {len(existing)-8} more')
+    print('\nPi skills')
+    for name in result.managed:
+        marker = '✓'
+        detail = ' repaired' if name in result.repaired else ''
+        print(f'  {marker} {name}{detail}')
+    print(f'\n{len(result.managed)} toolkit skills linked')
+    print(f'{len(result.preserved)} project-specific skill preserved' + ('' if len(result.preserved) == 1 else 's'))
+    if result.removed:
+        print(f'{len(result.removed)} stale toolkit skill link removed')
+    if result.warnings:
+        print('\nWarnings')
+        for w in result.warnings:
+            print(f'  ! {w}')
+    print('\nPi can discover skills from:')
+    print(f'  {result.skills_dir}')
+    print('\nIf Pi is already running, use /reload.')
+
+
+def parse_args(argv: list[str] | None) -> tuple[argparse.Namespace, bool]:
+    argv = list(argv or sys.argv[1:])
+    if argv[:2] == ['skills', 'sync']:
+        ap = argparse.ArgumentParser(prog='init_project.py skills sync')
+        ap.add_argument('--root', type=Path, default=Path.cwd())
+        ap.add_argument('--dry-run', action='store_true')
+        return ap.parse_args(argv[2:]), True
+    ap=argparse.ArgumentParser(); ap.add_argument('--config', type=Path); ap.add_argument('--quick', action='store_true'); ap.add_argument('--dry-run', action='store_true'); ap.add_argument('--yes', action='store_true'); ap.add_argument('--root', type=Path, default=Path.cwd()); ap.add_argument('--sync-skills', action='store_true')
+    return ap.parse_args(argv), False
+
+
+def main(argv: list[str]|None=None) -> int:
+    a, sync_only = parse_args(argv)
+    toolkit_root = find_toolkit_root(a.root)
+    root = find_project_root(a.root, toolkit_root)
+    try:
+        config_path = getattr(a, 'config', None)
+        if config_path:
+            cfg=load_config(config_path, root)
+        elif (root/'agent-project.yaml').exists():
+            cfg=load_config(root/'agent-project.yaml', root)
+        else:
+            cfg=default_config(root, getattr(a, 'quick', False))
+        if sync_only or getattr(a, 'sync_skills', False):
+            result=sync_skills(root, cfg, toolkit_root, getattr(a, 'dry_run', False))
+            for w in result.warnings: print(f'WARN: {w}', file=sys.stderr)
+            print(f'Synced {len(result.managed)} toolkit skills to {result.skills_dir}')
+            return 0
         files=generated_files(root,cfg)
         existing=[str(p) for p in files if safe_inside(root,p).exists()]
+        to_create=[p for p in files if str(p) not in existing]
         gitignore_update = gitignore_needs_update(root, cfg)
-        print('Files to create:', ', '.join(str(p) for p in files if str(p) not in existing))
+        print('Files to create:', ', '.join(str(p) for p in to_create))
         if existing: print('Existing files preserved:', ', '.join(existing))
         if gitignore_update: print('Existing .gitignore will be updated to ignore agent local/runtime files.')
         if a.dry_run: print('Dry run: no files written'); return 0
-        if existing: print('Refusing to overwrite existing files. Move/merge manually or rerun in a clean project.', file=sys.stderr); return 1
-        if not a.yes:
+        if to_create and not a.yes:
             ans=input('Write these files? [y/N] ')
             if ans.lower() not in {'y','yes'}: print('Cancelled'); return 1
-        for rel,content in files.items(): atomic_write(safe_inside(root,rel), content)
+        for rel,content in files.items():
+            path = safe_inside(root,rel)
+            if not path.exists(): atomic_write(path, content)
         update_gitignore(root, cfg)
-        errs=validate(root,cfg)
+        result=sync_skills(root, cfg, toolkit_root)
+        errs=validate(root,cfg) + validate_skill_structure(result)
         if errs: print('Validation errors: '+', '.join(errs), file=sys.stderr); return 1
-        print('Project initialized successfully'); return 0
+        print_summary(root, cfg, result, [str(p) for p in to_create], existing)
+        return 0
     except Exception as e:
         print(f'Error: {e}', file=sys.stderr); return 2
 if __name__ == '__main__': raise SystemExit(main())
