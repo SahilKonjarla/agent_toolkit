@@ -1,6 +1,6 @@
 # Pi background-agent runtime integration
 
-Status: **installed and locally smoke-tested**. Current adapter **0.3.0** supports **five concurrent task-defined workers per lead session**, using Pi **1.5.2** and `pi-subagents` **0.88.0**. See [usage/configuration](../../agent-toolkit/integrations/pi/README.md) and [evidence](pi-background-verification.md).
+Status: **installed and locally smoke-tested**. Current adapter **0.3.1** supports **five concurrent task-defined workers per lead session**, using Pi **1.5.2** and `pi-subagents` **0.88.0**. See [usage/configuration](../../agent-toolkit/integrations/pi/README.md) and [evidence](pi-background-verification.md).
 
 ## Execution model
 
@@ -26,7 +26,7 @@ Implementation worktrees start from a clean source checkout. They do not silentl
 
 ## UI and activation
 
-The local `~/code/pi-extensions/` consumer displays sanitized role, active count and elapsed time from the documented `ping`/`status` event API, with coalesced refresh and lifecycle cleanup. The runtime's FleetView/`/subagents-fleet` retains transcripts, model metadata, native steering and stop. Herdr remains optional manual terminal layout/inspection.
+The local `~/code/pi-extensions/` consumer displays sanitized role, active count and elapsed time from the documented `ping`/`status` event API, with coalesced refresh and lifecycle cleanup. The footer uses `Agent`/`Agents` and clears the live segment when no work needs attention. Duplicate persistent FleetView/async-widget rows are disabled; `/subagents-fleet` still retains transcripts, model metadata, native steering and stop. Herdr remains optional manual terminal layout/inspection.
 
 The current machine has the pinned runtime/local adapter in `~/.pi/agent/settings.json` and the five-slot profile in `~/.pi/agent/extensions/subagent/config.json`. **Run `/reload`** after this update. If an old recorded session lacks the new `background_task` tool, restart Pi, resume and `/reload`. Compiled upstream upgrades still require restart.
 

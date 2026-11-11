@@ -1,6 +1,6 @@
 # Pi background integration
 
-Adapter **0.3.0**, verified locally with Pi **1.5.2** and `pi-subagents` **0.88.0**. The lead chooses independent tasks and roles as needed, with **at most five concurrent background workers per lead session**. There is no fixed specialist roster or cumulative five-launch limit.
+Adapter **0.3.1**, verified locally with Pi **1.5.2** and `pi-subagents` **0.88.0**. The lead chooses independent tasks and roles as needed, with **at most five concurrent background workers per lead session**. There is no fixed specialist roster or cumulative five-launch limit.
 
 ## Task-defined dispatch
 
@@ -39,7 +39,7 @@ Implementation starts from a clean source checkout in a managed worktree. A dirt
 
 `/subagents-fleet` provides native transcripts, model info, steering and stop controls. Native completion notices return results and surface failures. `subagent` status/control actions remain available. A retry is a fresh scoped task after inspecting failure/partial work, not an automatic duplicate dispatch.
 
-Public RPC events drive `toolkit:agents-status:v1`; the separate local `~/code/pi-extensions/footer/` consumer shows active count, short role and elapsed time, with details yielding to warnings at narrow widths. No tasks or transcripts enter the footer, and no private runner files are scraped. The lead checks pinned refs and marks stale evidence; the public fleet DTO does not carry reviewed refs.
+Public RPC events drive `toolkit:agents-status:v1`; the separate local `~/code/pi-extensions/footer/` consumer shows `Agent`/`Agents`, active count, short role and elapsed time, with details yielding to warnings at narrow widths. The live agent segment disappears when active/attention counts reach zero. `fleetView:false` and `asyncWidget:false` hide duplicate persistent runner rows such as `Async runs`; `/subagents-fleet` and completion history remain available. No tasks or transcripts enter the footer, and no private runner files are scraped. The lead checks pinned refs and marks stale evidence; the public fleet DTO does not carry reviewed refs.
 
 ## Installation and activation
 

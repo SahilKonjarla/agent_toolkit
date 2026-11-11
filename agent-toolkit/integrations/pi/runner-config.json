@@ -16,7 +16,7 @@
   "artifactDir": "session",
   "worktreeProvider": "native",
   "inlineToolDisplay": "summary",
-  "fleetView": true,
+  "fleetView": false,
   "asyncWidget": false,
   "authorityPolicy": {
     "discardWorktree": "confirm",

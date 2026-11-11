@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.3.1
+
+- Keep one live Agent/Agents footer surface and hide duplicate persistent Async runs/FleetView rows; preserve the fleet inspector and completion history.
+- Verify that the live footer segment clears when the last worker completes.
+
 ## 0.3.0
 
 - Replace the fixed read-only runtime roster with task-defined `background_task` workers for analysis, approved shell/test work and isolated implementation.

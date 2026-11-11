@@ -59,7 +59,7 @@ The successful active-child stop above is a distinct scenario, not a fix for tha
 
 - Python toolkit tests: **26 passed**, `python -m unittest discover -s agent-toolkit/tests`.
 - Current adapter tests: **11 passed**, `npm test` in `agent-toolkit/integrations/pi/` (RPC lifecycle, projection, workflow bounds and real host tool-hook wiring without model prompts).
-- Local footer tests: **14 passed**, `npm test` in `~/code/pi-extensions/` (layout, idle/active/unknown status and narrow widths).
+- Local footer tests: **15 passed**, `npm test` in `~/code/pi-extensions/` (layout, Agent/Agents labels, active-to-idle removal, unknown status and narrow widths).
 - Script syntax checks and `git diff --check`: passed.
 
 The live smoke is opt-in and separate from normal unit tests. It does not claim coverage for remote machines, standalone binaries, mutation-capable workers, secret confinement, or visual UI acceptance.
