@@ -88,7 +88,7 @@ Users should generally invoke workflows by outcome, not by manually choosing age
 
 Eight task skills under `agent-toolkit/skills/quality/` cover PR review, CI triage, review feedback, preview QA, async jobs, API compatibility, observability and documentation drift. See [the skill index](agent-toolkit/skills/quality/README.md). Downstream initialization/skill sync exposes them alongside imported skills without changing vendor metadata.
 
-Implementation/review workflows now use focused review selection, diff-triggered logging/docs checks and richer evidence artifacts. [Delegation policy](agent-toolkit/standards/delegation-policy.md) defines optional background work; [runtime integration](docs/toolkit-design/pi-background-agents.md) and agent-job footer status remain pending compatibility verification and installation.
+Implementation/review workflows now use focused review selection, diff-triggered logging/docs checks and richer evidence artifacts. [Delegation policy](agent-toolkit/standards/delegation-policy.md) defines optional background work. The [Pi runtime adapter](agent-toolkit/integrations/pi/README.md) is installed and smoke-tested locally with up to five concurrent task-defined workers, approved test/shell work, isolated implementation and event-driven footer status; see [integration evidence and limitations](docs/toolkit-design/pi-background-agents.md). Installation on other machines remains opt-in.
 
 ## Imported skills
 
@@ -256,7 +256,7 @@ Known limitations:
 
 - The initializer is conservative and can be expanded with richer educational interactive prompts.
 - Python YAML paths require `PyYAML` to be installed.
-- No automatic multi-agent orchestration, deployment, branch creation, commit, push, or Herdr pane creation is implemented by design.
+- Background analysis requires the optional external runtime/adapter and retains documented upstream lifecycle limitations. Deployment, user-repository Git mutations and Herdr pane creation remain approval-gated; the toolkit does not automate them.
 
 ## Security
 

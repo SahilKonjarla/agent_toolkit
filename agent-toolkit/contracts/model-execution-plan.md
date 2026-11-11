@@ -31,7 +31,7 @@ _TBD._
 
 ## Delegation plan (if useful)
 
-Apply `../standards/delegation-policy.md`. State available runtime/version, approved execution mode and budget, worker role/task/scope, pinned target, capability tier, tools/approval limits, deadline, output artifact and collection decision point. Default to two active children and lead-only delegation. State sequential/manual fallback if background execution is unavailable.
+Apply `../standards/delegation-policy.md`. State available runtime/version, approved execution mode and budget, worker role/task/scope, pinned target, capability tier, tools/approval limits, deadline, output artifact and collection decision point. Use up to five concurrent background workers per lead session, choosing roles/tasks as needed; only the lead delegates. The cap is concurrent work, not total launches. State sequential/manual fallback if background execution is unavailable.
 
 ## Context reuse plan
 

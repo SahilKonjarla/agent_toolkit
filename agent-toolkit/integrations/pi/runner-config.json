@@ -1,0 +1,28 @@
+{
+  "toolActivation": "eager",
+  "asyncByDefault": true,
+  "forceTopLevelAsync": false,
+  "defaultSubagentContext": "fresh",
+  "timeoutMs": 600000,
+  "maxSubagentDepth": 1,
+  "globalConcurrencyLimit": 1,
+  "parallel": { "maxTasks": 1, "concurrency": 1 },
+  "maxSubagentSpawnsPerRun": 1,
+  "maxSubagentSpawnsPerSession": 0,
+  "maxActiveAsyncRunsPerSession": 5,
+  "autoResume": false,
+  "scheduledRuns": { "enabled": false },
+  "missions": { "enabled": false },
+  "artifactDir": "session",
+  "worktreeProvider": "native",
+  "inlineToolDisplay": "summary",
+  "fleetView": true,
+  "asyncWidget": false,
+  "authorityPolicy": {
+    "discardWorktree": "confirm",
+    "destructiveCleanup": "confirm",
+    "spawnBudgetGrant": "confirm",
+    "scheduleCreate": "forbid",
+    "projectOpen": "confirm"
+  }
+}

@@ -2,7 +2,7 @@
 
 ## Availability and approval
 
-Delegation is an optional execution strategy, not a dependency of any workflow. The lead checks the installed runtime, supported tools, permissions and approved model/session budget before launching workers. This toolkit does not install or implement a runner. Use `docs/toolkit-design/pi-background-agents.md` in the toolkit checkout for the runtime acceptance checklist.
+Delegation is an optional execution strategy, not a dependency of any workflow. The lead checks the installed runtime, supported tools, permissions and approved model/session budget before launching workers. The toolkit does not implement a runner. The optional `../integrations/pi/README.md` adapter uses an independently installed, pinned pi-subagents package. See `docs/toolkit-design/pi-background-agents.md` in the toolkit checkout for integration status and limitations.
 
 When asynchronous delegation is available and covered by the approved plan, automatically delegate independent, bounded work with a clear output. Keep small edits and coupled decisions in the lead session. An explicit foreground request or per-task opt-out takes precedence. Without a compatible runner or launch approval, run sequentially or propose manual sessions; report which mode was actually used.
 
@@ -15,9 +15,13 @@ Before dispatch, give each worker:
 - Required output contract and artifact location (saving requires approval).
 - Model capability tier, deadline and result-collection decision point.
 
-Start with fresh context; share parent context only when needed and within the approved information scope. Default to at most **two active children** within the approved budget. Only the lead delegates; children return results instead of launching more workers. Use economical discovery and deeper reasoning only where warranted by risk.
+Start with fresh context; share parent context only when needed and within the approved information scope. Allow at most **five concurrent background workers per lead session**, within the approved model budget. This is a concurrency ceiling, not a target count or lifetime launch limit. The lead chooses each worker's role/task as needed; a predefined specialist roster is optional, never required. Only the lead delegates; children return results instead of launching more workers. Use economical discovery and deeper reasoning only where warranted by risk.
 
-Analysis workers receive read/search tools by default. Shell commands, writes, tests, network side effects, worktree creation and access to secrets remain subject to existing approval policy; delegating does not grant permission. Use a separately approved worktree for each writing worker. The lead reviews patches and integrates deliberately; workers do not merge or overwrite each other's edits.
+Use the Pi adapter's `background_task` for one independently tracked job at a time. Dispatch other independent jobs while slots remain, then keep doing useful lead work. The runner rejects a sixth occupied slot; collect a completed result before replacing it. Composite/counted/nested fan-out is disabled in this profile so five top-level slots cannot multiply into more than five children.
+
+Choose permissions by task kind: analysis receives read/search tools; approved tests/checks add shell access; approved implementation adds edit/write tools and an isolated worktree. Shell commands, writes, tests, network side effects, worktree creation and access to secrets remain subject to existing approval policy; delegating does not grant permission. A worker can perform any bounded approved task appropriate to its tools, not just one of the canonical role names.
+
+For background tests, pass the exact approved finite commands and identify the source snapshot. Tests on a live lead checkout can race ongoing edits; report that limitation or choose an approved snapshot/worktree. Test execution does not authorize remediation or source edits. Use a separately approved worktree for each writing worker. The lead reviews patches and integrates deliberately; workers do not merge or overwrite each other's edits.
 
 ## Async lifecycle
 

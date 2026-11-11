@@ -1,5 +1,17 @@
 # Changelog
 
+## 0.3.0
+
+- Replace the fixed read-only runtime roster with task-defined `background_task` workers for analysis, approved shell/test work and isolated implementation.
+- Permit five concurrent workers per lead session, with reusable slots and no cumulative five-launch limit. Keep each slot to one child to prevent composite/nested fan-out from multiplying the cap.
+- Verify five real simultaneous test jobs, rejection of a sixth, reload recovery, capacity reuse, and an implementation patch isolated from the lead checkout.
+
+## 0.2.1
+
+- Add an optional Pi adapter for the pinned pi-subagents runtime, canonical read-only role registration, bounded delegation and public event-driven footer status.
+- Verify native async results, reload recovery, stop/process proof, steering, worktree isolation, parallel and foreground execution, and deadlines; document the upstream pre-start stop/capacity limitation.
+- Remove tracked Python bytecode and ignore generated cache/OS/runtime files.
+
 ## 0.2.0
 
 - Add eight toolkit-owned quality skills and downstream skill sync support without modifying vendor metadata.

@@ -25,7 +25,7 @@ Version one is human-supervised. Agents inspect and propose freely, then request
 
 Pi is the primary runtime. Codex CLI can be an independent worker. Herdr can arrange manual terminal sessions but does not provide orchestration or isolation. Stable artifacts replace chat-history transfer.
 
-Optional delegation follows `agent-toolkit/standards/delegation-policy.md`; no runner is bundled. Background runtime/fleet integration remains pending the checklist in `pi-background-agents.md`. Workflows fall back to sequential execution when compatible approved dispatch is unavailable.
+Optional delegation follows `agent-toolkit/standards/delegation-policy.md`; no runner is bundled. The optional `agent-toolkit/integrations/pi/` adapter registers ephemeral task-defined workers through pi-subagents' public runtime-agent API, selects tools by task kind, and projects public RPC status into local footer events. Five atomic background slots each admit one child; composite/nested fan-out cannot multiply the cap. Approved test work gets shell access; approved implementation receives a managed worktree. Local installation, live verification and limitations are recorded in `pi-background-agents.md`. Workflows fall back to sequential execution when compatible approved dispatch is unavailable.
 
 ## Owned skill discovery
 

@@ -1,44 +1,47 @@
 # Pi background-agent runtime integration
 
-Status: **runtime integration pending**. Toolkit delegation policy and report fields are implemented; automatic job execution, fleet controls and job-status footer integration are not installed by those Markdown files.
+Status: **installed and locally smoke-tested**. Current adapter **0.3.0** supports **five concurrent task-defined workers per lead session**, using Pi **1.5.2** and `pi-subagents` **0.88.0**. See [usage/configuration](../../agent-toolkit/integrations/pi/README.md) and [evidence](pi-background-verification.md).
 
-## Candidate and boundaries
+## Execution model
 
-`pi-subagents` is the candidate runtime: <https://github.com/nicobailon/pi-subagents>. Keep toolkit roles/workflows canonical and adapt them to the installed runner rather than building cancellation and process management into toolkit scripts. Pi's bundled subagent example is a smaller reference, not evidence of non-blocking execution. Herdr remains manual terminal layout management.
+The lead calls `background_task`, choosing the role and bounded brief as needed. There is no fixed runtime roster. Canonical toolkit roles and skills remain optional task guidance. Each dispatch returns a job ID immediately, letting the lead continue independent work until it needs the result.
 
-Before installing/configuring a runner, read the installed Pi extension/TUI documentation and the candidate's current configuration, workflow, worktree and extension API documentation. Capture exact Pi/runner versions. Treat upstream config keys and integration surfaces as unverified until checked against those versions; this document is not executable configuration.
+Permission classes are independent of role: analysis has read/search tools, approved test/check work adds shell, and approved implementation adds edits in a mandatory managed worktree. Children cannot delegate. Ambient extensions are disabled. These are tool boundaries, not an OS sandbox; shell commands and file reads still require scope/secret discipline.
 
-## Acceptance checklist
+The native runner atomically admits at most five occupied top-level background slots. Each slot can start only one child; composite/counted/nested fan-out cannot multiply five slots into 25 agents. Model-driven async calls go through the task adapter. There is no cumulative session launch cap: completed/retired jobs release slots for new tasks. The limit is per lead session, not across unrelated Pi processes. Trusted raw RPC clients must preserve the profile's single-child bounds.
 
-Use disposable tasks and approved paths, with no production access or secrets:
+The runner owns processes, session/artifact lifecycle, deadlines, completion delivery, steering, stop and worktrees. The adapter uses public runtime-agent registration, capability-ceiling and event-bus RPC APIs; installed runner source is unchanged. Scheduling and automatic workflow resumption remain off; foreground remains an explicit opt-out.
 
-- [ ] User approves dependency/extension installation and launch/model budget.
-- [ ] Existing toolkit roles load with expected scope and read-only tools for analysis.
-- [ ] Background launch returns a job ID before the task finishes; the lead can continue.
-- [ ] Explicit foreground and per-task opt-out work.
-- [ ] At most two active children by default, lead-only delegation and deadlines are enforced.
-- [ ] Completion/failure/cancellation are visible; an outstanding job is not mislabeled canceled.
-- [ ] Retry targets one job without accidentally relaunching completed work.
-- [ ] Analysis cannot silently gain shell/write/secret permissions.
-- [ ] Approved writing workers have separate worktrees; the lead can inspect patches before integration.
-- [ ] Results include the reviewed ref and are marked stale after the lead changes that target.
-- [ ] Reports and handoffs preserve job IDs, results, validation and outstanding-job ownership.
-- [ ] Shutdown/reload behavior is understood: jobs are either deliberately preserved/reconnected or stopped, never silently orphaned.
+## Verified current behavior
 
-Prefer explicit async dispatch or supported workflow defaults that retain necessary launch clarification. Do not enable stronger clarification-suppression settings just to make a demo non-blocking.
+The current live smoke launched five differently named test workers concurrently and observed the native cap reject a sixth. All five ran the approved fixture unittest command with successful native tool-output evidence. They survived reload. A later analysis job reused capacity, proving this is not five total launches. A dynamically named implementation worker wrote an approved canary only in its managed worktree, captured a patch/handoff, and left the main fixture checkout clean.
 
-## UI follow-up
+Footer status events reported five active children. Appearance and interactive fleet controls remain human terminal checks. The earlier 0.2.1 smoke additionally recorded active-child stop with observed process proof, steering receipt, foreground execution and deadline failure; those records are historical checks, not claims that the old two-child workflow policy remains enabled.
 
-The separate local extension project `~/code/pi-extensions/` has received a footer modernization pass (readable branch labels, compact context percentage, themed width-aware layout). Visual confirmation remains a user check.
+## Evidence integrity and worktree limits
 
-After the runner checklist passes, use only a supported job-state interface to connect active/attention-needed jobs to that footer. Show active count, short role and elapsed time; remain quiet when idle. Keep transcript/tool details in the existing fleet inspector. Support completion summaries, failure reason and explicit retry where the runner provides it. Label old-ref results stale. Test narrow terminals, multiple completions and failed/canceled jobs.
+The lead pins task refs/snapshots and reconciles stale results in review/handoff artifacts. The public fleet DTO lacks reviewed refs; the footer invents no freshness labels. Background tests on a live checkout may race lead edits, so the brief and result must name that limitation or use an approved stable snapshot.
 
-If the runner exposes no supported state interface, document that blocker instead of scraping private runtime state or showing invented job status.
+Implementation worktrees start from a clean source checkout. They do not silently include uncommitted changes. Dirty sources require an approved snapshot strategy; neither adapter nor worker may auto-commit/stash the user's work. The lead reviews/integrates saved patches deliberately.
 
-## Sources to verify during integration
+## UI and activation
+
+The local `~/code/pi-extensions/` consumer displays sanitized role, active count and elapsed time from the documented `ping`/`status` event API, with coalesced refresh and lifecycle cleanup. The runtime's FleetView/`/subagents-fleet` retains transcripts, model metadata, native steering and stop. Herdr remains optional manual terminal layout/inspection.
+
+The current machine has the pinned runtime/local adapter in `~/.pi/agent/settings.json` and the five-slot profile in `~/.pi/agent/extensions/subagent/config.json`. **Run `/reload`** after this update. If an old recorded session lacks the new `background_task` tool, restart Pi, resume and `/reload`. Compiled upstream upgrades still require restart.
+
+## Known upstream limitation
+
+An immediate stop before child initialization, or a deadline shorter than startup, can retain a slot with `process-terminal:unknown` (`writer-close-unverified`) in 0.88.0. The adapter preserves fail-closed accounting; it does not rewrite proof, silently widen capacity or call an unknown process state observed. Inspect exact run/proof, use a fresh independent session if necessary, or apply a separately reviewed upstream fix.
+
+## Scope and references
+
+Local native managed/npm Pi is verified. Standalone Linux, remote-machine execution, arbitrary future versions and OS-level secret confinement are not claimed.
+
+Before upgrades, read the installed version's documentation:
 
 - <https://github.com/nicobailon/pi-subagents/blob/main/docs/configuration.md>
+- <https://github.com/nicobailon/pi-subagents/blob/main/docs/agents.md>
 - <https://github.com/nicobailon/pi-subagents/blob/main/docs/workflows.md>
+- <https://github.com/nicobailon/pi-subagents/blob/main/docs/observability.md>
 - <https://github.com/nicobailon/pi-subagents/blob/main/docs/extension-api.md>
-
-These are discovery pointers, not a claim that compatibility has been validated.

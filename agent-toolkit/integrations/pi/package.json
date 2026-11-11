@@ -1,0 +1,9 @@
+{
+  "name": "agent-toolkit-pi",
+  "version": "0.3.0",
+  "private": true,
+  "type": "module",
+  "pi": { "extensions": ["./index.ts"] },
+  "peerDependencies": { "@earendil-works/pi-coding-agent": "*" },
+  "scripts": { "test": "node --test tests/*.test.mjs" }
+}

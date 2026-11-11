@@ -69,7 +69,7 @@ See `skills/quality/README.md` for `review-pr`, `triage-ci`, `review-feedback`, 
 
 Reviews retain Standards/Spec axes and select focused passes through `standards/review-specialists.md`. Implementation and review apply diff-triggered logging/docs checks in `standards/engineering-principles.md`. Reports carry pinned targets, test matrices, browser evidence and optional worker evidence.
 
-For independent background tasks, follow `standards/delegation-policy.md`. A compatible runner is not bundled or installed automatically; see the toolkit checkout's `docs/toolkit-design/pi-background-agents.md` for pending integration checks. Workflows remain usable sequentially.
+For independent background tasks, follow `standards/delegation-policy.md`. The optional [Pi adapter](integrations/pi/README.md) integrates a pinned external runtime with up to five concurrent task-defined workers, approved background tests/tasks, isolated implementation and public job-status events. It has been installed and smoke-tested locally; see `docs/toolkit-design/pi-background-agents.md` for evidence and the upstream immediate-stop limitation. Other machines opt in explicitly; workflows remain usable sequentially.
 
 ## Imported Matt Pocock skills
 

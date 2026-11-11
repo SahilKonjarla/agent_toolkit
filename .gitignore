@@ -1,0 +1,8 @@
+# Python-generated artifacts
+__pycache__/
+*.py[cod]
+
+# Local editor/OS and agent runtime state
+.DS_Store
+.agent-work/
+.pi/subagents/

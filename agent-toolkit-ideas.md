@@ -4,7 +4,7 @@ This is a research and design reference for [agent_toolkit](https://github.com/S
 
 ## Implementation status
 
-The design sections below retain the original proposals. Toolkit release **0.2.0** implements the repository-side pieces:
+The design sections below retain the original proposals. Toolkit release **0.3.0** includes the repository-side pieces and an optional locally verified Pi background adapter:
 
 | Area | Status and source |
 |---|---|
@@ -14,10 +14,10 @@ The design sections below retain the original proposals. Toolkit release **0.2.0
 | Logging/docs reminders | Added to [engineering principles](agent-toolkit/standards/engineering-principles.md) and implementation/review artifacts. |
 | Cross-skill artifacts | Review, implementation and handoff contracts carry pinned targets, test matrices, browser evidence and optional worker evidence. |
 | Background delegation policy | [Policy and dispatch/evidence rules](agent-toolkit/standards/delegation-policy.md) added; compatible external execution remains optional. |
-| Background runtime and fleet/footer job UI | **Pending installation and compatibility verification**, not implemented by Markdown guidance. Follow [the integration checklist](docs/toolkit-design/pi-background-agents.md). |
+| Background runtime and fleet/footer job UI | Installed locally: Pi 1.5.2 + pi-subagents 0.88.0 + [task-defined adapter](agent-toolkit/integrations/pi/README.md). Up to five concurrent workers, chosen as needed, can inspect, run approved tests/commands, or implement in isolated worktrees. Live checks verified five simultaneous test jobs, sixth-job rejection, slot reuse and an isolated implementation patch. Public job status is connected to the local footer; see [evidence and limitations](docs/toolkit-design/pi-background-verification.md). Visual acceptance remains a user check. |
 | Delegation value tracking | Optional worker evidence/decision-impact fields added; no comparative run data collected yet. |
 
-Imported `.agents/skills/` sources and vendor lock metadata remain unchanged. The new skills are toolkit-owned guidance, not a new orchestration or GitHub/browser tool implementation.
+Imported `.agents/skills/` sources and vendor lock metadata remain unchanged. The task skills remain toolkit-owned guidance, not GitHub/browser tool implementations. The optional runtime adapter uses external public APIs rather than implementing a new runner. Tracked Python bytecode has also been removed, with cache/OS/runtime ignore rules added.
 
 ## Background agents in Pi
 
@@ -31,7 +31,7 @@ Background delegation has two defaults that are worth tuning independently.
 | How to run it | Start eligible workers asynchronously, return a job ID immediately, and let Pi continue until it needs their results. Allow an explicit foreground run or a per-task opt-out. |
 | When to collect | Collect at the next decision that uses the result. A final PR review should use the finished diff, while a regression scout can work from the issue and affected paths earlier. |
 | Context | Start with fresh context. Pass the task, scope, repo/ref, relevant paths, acceptance criteria, and expected output. Share a parent session only when the task needs that context. |
-| Fan-out | Start with two active children as an example default. Only the lead delegates. Pick model tiers by task, with a lighter model for discovery and deeper reasoning for difficult reviews. |
+| Fan-out | At most five concurrent background workers per lead session, with roles/tasks chosen as needed rather than a fixed roster. Each slot starts one child; only the lead delegates. Pick model tiers by task, with a lighter model for discovery and deeper reasoning for difficult reviews. |
 | Permissions | Give analysis workers read/search tools. Keep shell, writes, worktree creation, tests, and other actions subject to the toolkit's existing approvals. |
 | Parallel editing | Use an approved, separate worktree per writing worker. Have the lead review patches and integrate them deliberately. |
 | Failure and cancellation | Show failures and cancellations in Pi. Let the lead retry one worker or proceed with a clearly stated evidence gap. Set a deadline for each job. |
@@ -56,7 +56,7 @@ The job lifecycle should be legible from queued through running to completed, fa
 
 ### Modernize the existing footer before adding more status
 
-The screenshots supplied on November 10, 2026 (`Screenshot 2026-11-10 at 8.32.47 PM.png` and `Screenshot 2026-11-10 at 8.32.58 PM.png`) showed that the footer needed a visual cleanup. The modernization pass has since been implemented in the separate local extension project; the points below preserve the design intent. Background-job status remains pending runtime integration.
+The screenshots supplied on November 10, 2026 (`Screenshot 2026-11-10 at 8.32.47 PM.png` and `Screenshot 2026-11-10 at 8.32.58 PM.png`) showed that the footer needed a visual cleanup. The modernization pass has since been implemented in the separate local extension project; the points below preserve the design intent. Background-job status is now connected through the optional local runtime adapter; terminal appearance remains a user check.
 
 - **Readable repository and branch state:** Some symbols next to the branch look like boxed question marks, and the adjacent counts or markers are hard to interpret. Check glyph rendering and provide readable fallbacks rather than relying on special fonts.
 - **Clearer hierarchy:** Repository, branch, model, reasoning level, and context usage currently read as one dense strip separated by pipes. Use consistent spacing and grouping so the important state is easy to scan.
