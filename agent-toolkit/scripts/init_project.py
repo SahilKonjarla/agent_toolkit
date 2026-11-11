@@ -237,6 +237,8 @@ Override files must not contain secret values, credentials, tokens, account IDs,
 - Toolkit workflows: `agent-toolkit/workflows/`
 - Standards: `agent-toolkit/standards/`
 - Contracts: `agent-toolkit/contracts/`
+- Toolkit quality skills (PR/CI/feedback, preview QA, async/API/observability/docs): `agent-toolkit/skills/quality/README.md`
+- Independent bounded worker tasks → `agent-toolkit/standards/delegation-policy.md`
 - Imported skill adaptations: `agent-toolkit/adaptations/matt-pocock/`
 - Project-local overrides: `{cfg.paths['local_overrides']}/`
 - Project context: `{cfg.paths['context']}`
@@ -254,7 +256,7 @@ Use commands from `agent-project.yaml`. Do not invent commands without inspectin
 
 ## Shared engineering rules
 
-Inspect before editing, prefer existing patterns, keep changes scoped, test behavioral changes, and report honestly.
+Inspect before editing, prefer existing patterns, keep changes scoped, test behavioral changes, and report honestly. During implementation/review apply diff-triggered logging/docs checks in `agent-toolkit/standards/engineering-principles.md`; select focused review passes via `agent-toolkit/standards/review-specialists.md`.
 
 When using imported Matt Pocock skills, apply toolkit standards first. Treat slash-command, sub-agent, commit, branch, temp-file, or root-`CONTEXT.md` assumptions as guidance that must be adapted to this project's approval, Git, handoff, and context policies.
 
@@ -351,6 +353,30 @@ def toolkit_skills_dir(toolkit_root: Path) -> Path:
     return toolkit_root / '.agents' / 'skills'
 
 
+def toolkit_skill_sources(toolkit_root: Path) -> tuple[dict[str, Path], list[str]]:
+    """Combine locked imports and toolkit-owned skills without altering vendor metadata."""
+    enabled, warnings = read_enabled_skill_names(toolkit_root)
+    canonical = toolkit_skills_dir(toolkit_root)
+    sources: dict[str, Path] = {}
+    for name in enabled:
+        if not re.fullmatch(r'[a-z0-9]+(?:-[a-z0-9]+)*', name):
+            warnings.append(f'Invalid toolkit skill name: {name!r}; skipped')
+            continue
+        sources[name] = canonical / name
+    owned_root = toolkit_root / 'agent-toolkit' / 'skills'
+    if not owned_root.is_dir():
+        owned_root = toolkit_root / 'skills'
+    for skill_file in sorted(owned_root.glob('*/*/SKILL.md')):
+        name = skill_file.parent.name
+        if not re.fullmatch(r'[a-z0-9]+(?:-[a-z0-9]+)*', name):
+            warnings.append(f'Invalid owned skill name: {name!r}; skipped')
+        elif name in sources:
+            warnings.append(f'{name}: duplicate toolkit skill; keeping {sources[name]}')
+        else:
+            sources[name] = skill_file.parent
+    return sources, warnings
+
+
 def manifest_path(root: Path, cfg: ProjectConfig) -> Path:
     return safe_inside(root, Path(cfg.paths.get('local_overrides', '.agent-config')) / 'managed-skills.json')
 
@@ -377,20 +403,18 @@ def symlink_points_to(path: Path, target: Path) -> bool:
 def sync_skills(root: Path, cfg: ProjectConfig, toolkit_root: Path | None = None, dry_run: bool = False) -> SkillSyncResult:
     toolkit_root = (toolkit_root or find_toolkit_root()).resolve()
     skills_dir = safe_inside(root, Path('.agents') / 'skills')
-    canonical_dir = toolkit_skills_dir(toolkit_root)
     linked: list[str] = []
     repaired: list[str] = []
     unchanged: list[str] = []
     removed: list[str] = []
     warnings: list[str] = []
-    enabled, lock_warnings = read_enabled_skill_names(toolkit_root)
-    warnings.extend(lock_warnings)
+    sources, source_warnings = toolkit_skill_sources(toolkit_root)
+    warnings.extend(source_warnings)
     previous = set(load_managed_manifest(root, cfg))
     valid: set[str] = set()
     if not dry_run:
         skills_dir.mkdir(parents=True, exist_ok=True)
-    for name in enabled:
-        source = canonical_dir / name
+    for name, source in sorted(sources.items()):
         if not source.is_dir() or not (source / 'SKILL.md').is_file():
             warnings.append(f'{name}: configured toolkit skill missing or invalid at {source}')
             continue

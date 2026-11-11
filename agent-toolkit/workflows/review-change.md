@@ -41,9 +41,9 @@ Platform Engineer for Docker/CI/CD/deployment changes. Production Readiness Engi
 
 1. **Pin scope** — Identify diff command/range and verify it resolves.
 2. **Find source of truth** — Locate spec/ticket and standards.
-3. **Classify relevance** — Decide whether platform/production/security review is needed.
-4. **Review** — Check spec compliance, standards, tests, risks, secrets, and platform impact.
-5. **Report** — Produce `review-report.md`, grouping findings by severity and type.
+3. **Classify relevance** — Use `../standards/review-specialists.md` to select diff-triggered passes and relevant platform/production/security roles. GitHub PRs use `../skills/quality/review-pr/SKILL.md`; failing checks or unresolved threads trigger `triage-ci` or `review-feedback` in that directory.
+4. **Review** — Report Standards and Spec separately against the same pinned target. Run selected specialists, apply logging/docs reminders in `../standards/engineering-principles.md`, and use `../standards/delegation-policy.md` for approved workers; otherwise review sequentially. Missing spec or failed worker is an evidence gap.
+5. **Report** — Recheck the target, mark stale results, and produce `review-report.md`, grouping findings by severity/type and deduplicating prior comments. Link the test matrix, browser evidence and worker results; state actual validation.
 6. **Remediation approval** — Stop before edits.
 7. **Verification** — If remediation is approved, verify fixes and update report.
 

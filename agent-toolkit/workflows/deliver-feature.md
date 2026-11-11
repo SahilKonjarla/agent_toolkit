@@ -49,10 +49,10 @@ Platform Engineer or Production Readiness Engineer only if the feature affects D
 3. **Specification approval** — Stop until human approves scope, artifacts, roles, and model/session plan.
 4. **Implementation plan** — Application Engineer states files/areas likely affected and validation plan.
 5. **Implementation approval** — Stop before writes unless approval already covers the scope.
-6. **Vertical-slice implementation** — Implement small slices, test at approved seams, avoid speculative abstractions.
+6. **Vertical-slice implementation** — Implement small slices, test at approved seams, avoid speculative abstractions. Apply diff-triggered logging/docs checks in `../standards/engineering-principles.md`; carry a behavior-to-test matrix in the implementation report. Independent compatibility/regression scouting may run under `../standards/delegation-policy.md` within the approved session budget.
 7. **Implementation report** — Produce `implementation-report.md`; include overrides consulted and suggested commit message if useful.
 8. **Review approval** — Human approves handoff to review and any broad validation commands.
-9. **Quality review** — Quality Engineer reviews against spec and standards, runs approved checks, and produces `review-report.md`.
+9. **Quality review** — Quality Engineer reviews the finished pinned diff on separate Standards/Spec axes and selects focused passes using `../standards/review-specialists.md`. Run approved checks and preview QA where triggered, reuse implementation artifacts, and produce `review-report.md`. Reconcile early scout results against the finished diff rather than treating them as final review.
 10. **Remediation approval** — Stop before any remediation.
 11. **Scoped remediation and verification** — Relevant engineer remediates approved findings; Quality verifies.
 12. **Final completion report** — Summarize status, files, validation, risks, overrides consulted, and next step.

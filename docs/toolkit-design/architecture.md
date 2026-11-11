@@ -24,3 +24,9 @@ Version one is human-supervised. Agents inspect and propose freely, then request
 ## Coordination
 
 Pi is the primary runtime. Codex CLI can be an independent worker. Herdr can arrange manual terminal sessions but does not provide orchestration or isolation. Stable artifacts replace chat-history transfer.
+
+Optional delegation follows `agent-toolkit/standards/delegation-policy.md`; no runner is bundled. Background runtime/fleet integration remains pending the checklist in `pi-background-agents.md`. Workflows fall back to sequential execution when compatible approved dispatch is unavailable.
+
+## Owned skill discovery
+
+Toolkit-owned skills live under `agent-toolkit/skills/<category>/<name>/SKILL.md`. The initializer combines these sources with locked `.agents/skills/` imports when creating downstream project links. It preserves project-owned name collisions and keeps vendor lock/inventory metadata separate. The skill index and generated project guidance provide task triggers; nested files in this checkout do not imply global runtime installation.

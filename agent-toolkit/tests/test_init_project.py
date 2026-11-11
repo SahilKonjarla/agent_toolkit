@@ -148,6 +148,55 @@ class InitProjectTests(unittest.TestCase):
             self.assertFalse(str(link.readlink()).startswith('/'))
             self.assertEqual(result.toolkit_root, toolkit.resolve())
 
+    def test_sync_includes_owned_skills_without_changing_vendor_lock(self):
+        import tempfile
+        with tempfile.TemporaryDirectory() as td:
+            root = Path(td); toolkit = self.make_project(root)
+            owned = toolkit / 'agent-toolkit' / 'skills' / 'quality' / 'review-pr'
+            owned.mkdir(parents=True); (owned / 'SKILL.md').write_text('# PR review\n')
+            lock_before = (toolkit / 'skills-lock.json').read_bytes()
+            cfg = mod.default_config(root)
+            result = mod.sync_skills(root, cfg, toolkit)
+            self.assertIn('review-pr', result.linked)
+            self.assertEqual((root / '.agents/skills/review-pr').resolve(), owned.resolve())
+            self.assertEqual((toolkit / 'skills-lock.json').read_bytes(), lock_before)
+            self.assertIn('review-pr', mod.sync_skills(root, cfg, toolkit).unchanged)
+
+    def test_owned_skills_dry_run_and_name_collision(self):
+        import tempfile
+        with tempfile.TemporaryDirectory() as td:
+            root = Path(td); toolkit = self.make_project(root)
+            for name in ['review-pr', 'testing']:
+                owned = toolkit / 'skills' / 'quality' / name
+                owned.mkdir(parents=True); (owned / 'SKILL.md').write_text('# skill\n')
+            cfg = mod.default_config(root)
+            result = mod.sync_skills(root, cfg, toolkit, dry_run=True)
+            self.assertIn('review-pr', result.linked)
+            self.assertFalse((root / '.agents').exists())
+            self.assertTrue(any('duplicate' in warning and 'testing' in warning for warning in result.warnings))
+
+    def test_invalid_lock_skill_cannot_escape_skill_directory(self):
+        import tempfile
+        with tempfile.TemporaryDirectory() as td:
+            root = Path(td); toolkit = self.make_project(root, lock_names=['../outside'])
+            result = mod.sync_skills(root, mod.default_config(root), toolkit)
+            self.assertEqual(result.managed, [])
+            self.assertTrue(any('Invalid toolkit skill name' in warning for warning in result.warnings))
+            self.assertFalse((root / '.agents/outside').exists())
+
+    def test_removed_owned_skill_link_is_cleaned_up(self):
+        import tempfile
+        with tempfile.TemporaryDirectory() as td:
+            root = Path(td); toolkit = self.make_project(root)
+            owned = toolkit / 'skills/quality/review-pr'
+            owned.mkdir(parents=True); skill = owned / 'SKILL.md'; skill.write_text('# PR review\n')
+            cfg = mod.default_config(root)
+            mod.sync_skills(root, cfg, toolkit)
+            skill.unlink()
+            result = mod.sync_skills(root, cfg, toolkit)
+            self.assertIn('review-pr', result.removed)
+            self.assertFalse((root / '.agents/skills/review-pr').is_symlink())
+
     def test_secret_warning_regex(self):
         self.assertIsNotNone(mod.SECRET_RE.search('api_key: abc123'))
 if __name__ == '__main__': unittest.main()

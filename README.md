@@ -84,6 +84,12 @@ The six version-one workflows live in `agent-toolkit/workflows/`:
 
 Users should generally invoke workflows by outcome, not by manually choosing agents.
 
+## Toolkit-owned quality skills
+
+Eight task skills under `agent-toolkit/skills/quality/` cover PR review, CI triage, review feedback, preview QA, async jobs, API compatibility, observability and documentation drift. See [the skill index](agent-toolkit/skills/quality/README.md). Downstream initialization/skill sync exposes them alongside imported skills without changing vendor metadata.
+
+Implementation/review workflows now use focused review selection, diff-triggered logging/docs checks and richer evidence artifacts. [Delegation policy](agent-toolkit/standards/delegation-policy.md) defines optional background work; [runtime integration](docs/toolkit-design/pi-background-agents.md) and agent-job footer status remain pending compatibility verification and installation.
+
 ## Imported skills
 
 Imported Matt Pocock skills are under `.agents/skills/` and are inventoried in:

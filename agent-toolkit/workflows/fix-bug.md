@@ -46,8 +46,8 @@ Platform Engineer for environment/CI/deployment bugs. Production Readiness Engin
 5. **Diagnosis direction approval** — Present evidence and ranked falsifiable hypotheses.
 6. **Fix proposal** — Relevant engineer proposes scoped change and regression seam.
 7. **Implementation approval** — Stop before writes/remediation.
-8. **Fix and regression coverage** — Implement approved change and test at correct seam.
-9. **Verification** — Quality verifies red loop goes green and regression coverage is meaningful.
+8. **Fix and regression coverage** — Implement approved change and test at correct seam. Apply diff-triggered logging/docs checks from `../standards/engineering-principles.md` and record behavior-to-test evidence.
+9. **Verification** — Quality verifies red loop goes green and regression coverage is meaningful. Review the finished pinned diff on Standards/Spec axes with triggered passes from `../standards/review-specialists.md`. Use `../standards/delegation-policy.md` only for independent work within the approved plan; report missing or stale evidence explicitly.
 10. **Final report** — Include symptom, repro command, root cause, fix, tests, risks, overrides consulted, and next step.
 
 ## Approval gates

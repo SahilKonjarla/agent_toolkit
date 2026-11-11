@@ -54,6 +54,8 @@ Override files must not contain secret values, credentials, tokens, account IDs,
 - Toolkit workflows: `agent-toolkit/workflows/`
 - Standards: `agent-toolkit/standards/`
 - Contracts: `agent-toolkit/contracts/`
+- Toolkit quality skills (PR/CI/feedback, preview QA, async/API/observability/docs): `agent-toolkit/skills/quality/README.md`
+- Independent bounded worker tasks → `agent-toolkit/standards/delegation-policy.md`
 - Imported skill adaptations: `agent-toolkit/adaptations/matt-pocock/`
 - Project-local overrides: `.agent-config/`
 
@@ -65,7 +67,7 @@ Use commands from `agent-project.yaml`. Do not invent commands without inspectin
 
 ## Shared engineering rules
 
-Inspect before editing, prefer existing patterns, keep changes scoped, test behavioral changes, and report honestly.
+Inspect before editing, prefer existing patterns, keep changes scoped, test behavioral changes, and report honestly. During implementation/review apply diff-triggered logging/docs checks in `agent-toolkit/standards/engineering-principles.md`; select focused review passes via `agent-toolkit/standards/review-specialists.md`.
 
 When using imported Matt Pocock skills, apply toolkit standards first. Treat slash-command, sub-agent, commit, branch, temp-file, or root-`CONTEXT.md` assumptions as guidance that must be adapted to this project's approval, Git, handoff, and context policies.
 

@@ -11,7 +11,7 @@ A reusable, project-agnostic software-delivery toolkit for supervised agent work
 
 ## What this toolkit is not
 
-- Not automatic multi-agent orchestration.
+- Not a multi-agent runtime; optional approved delegation uses an external runner or manual sessions.
 - Not automatic Herdr pane creation.
 - Not a deployment/infrastructure/provisioning system.
 - Not a secret store.
@@ -37,6 +37,7 @@ agent-toolkit/
   scripts/       bootstrap, update, skill inventory
   profiles/      stack/deployment/compliance overlays
   adaptations/   wrapper docs for imported skills
+  skills/        toolkit-owned task skills (separate from vendor imports)
 ```
 
 Imported skills live outside toolkit-owned content at `.agents/skills/`.
@@ -61,6 +62,14 @@ Primary workflows are outcome-oriented:
 6. Prepare Production Release
 
 Each workflow defines inputs, roles, phases, approval gates, artifacts, model-selection considerations, cost controls, rollback behavior, and completion criteria.
+
+## Toolkit-owned quality skills
+
+See `skills/quality/README.md` for `review-pr`, `triage-ci`, `review-feedback`, `qa-preview`, `review-async-jobs`, `review-api-contract`, `review-observability`, and `docs-drift`. Initializing a downstream project or running `init_project.py skills sync` exposes owned skills alongside locked imports, preserving existing project-owned paths. Imported lock/inventory metadata remains unchanged.
+
+Reviews retain Standards/Spec axes and select focused passes through `standards/review-specialists.md`. Implementation and review apply diff-triggered logging/docs checks in `standards/engineering-principles.md`. Reports carry pinned targets, test matrices, browser evidence and optional worker evidence.
+
+For independent background tasks, follow `standards/delegation-policy.md`. A compatible runner is not bundled or installed automatically; see the toolkit checkout's `docs/toolkit-design/pi-background-agents.md` for pending integration checks. Workflows remain usable sequentially.
 
 ## Imported Matt Pocock skills
 

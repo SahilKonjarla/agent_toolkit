@@ -28,6 +28,17 @@ Paths the next agent should inspect first.
 
 Exact commands run and summarized outcomes.
 
+## Delegated work (when used)
+
+| Job ID | Role/task | Mode/model tier | Reviewed target | Elapsed/deadline | State | Report/findings/validation | Stale? | Decision impact |
+|---|---|---|---|---|---|---|---|---|
+
+Record start/end timestamps when available. For outstanding jobs name the owner, collection decision point and supported cancellation/reconnection action. Preserve failures and evidence gaps. Recheck reviewed refs before reusing results.
+
+## Validation artifacts
+
+Link pinned diff/snapshot, behavior-to-test matrix and browser QA results. State which checks ran and which remain unverified.
+
 ## Remaining work
 
 Concrete unfinished tasks.

@@ -29,13 +29,13 @@ But adapt it to this supervised flow:
 2. Confirm the Git comparison command before relying on it.
 3. Locate spec/ticket source from user-provided path, `docs/specs/`, `.agent-work/tickets/`, issue tracker configuration, or commit references.
 4. Locate standards from project docs, `AGENTS.md`, `agent-project.yaml`, and `agent-toolkit/standards/`.
-5. Decide whether platform or production-readiness review is relevant.
+5. Select diff-triggered specialists through `../../standards/review-specialists.md`, including silent failures and regression coverage; decide whether platform or production-readiness review is relevant.
 6. Produce `agent-toolkit/contracts/review-report.md`.
 7. Stop for human approval before any remediation.
 
-## Manual-session policy
+## Execution policy
 
-Do not assume automatic parallel sub-agents. If separate review axes would help, recommend manual sessions such as:
+Pin the same diff for every axis and specialist, then apply `../../standards/delegation-policy.md`. Compatible, approved background execution is optional; without it, run sequentially or recommend manual sessions such as:
 
 ```text
 Quality Engineer — Standards Review
@@ -44,7 +44,7 @@ Platform Engineer — Platform Review, if relevant
 Production Readiness Engineer — Release Risk Review, if relevant
 ```
 
-The user decides whether to launch additional sessions.
+Additional sessions must fit the approved plan and budget. Recheck the target before finalizing; label old-ref results stale. Preserve job IDs and evidence when workers were actually used.
 
 ## Severity and finding rules
 
