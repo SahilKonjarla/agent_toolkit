@@ -1,6 +1,6 @@
 # Pi background-agent runtime integration
 
-Status: **installed and locally smoke-tested**. Current adapter **0.4.0** supports **five concurrent task-defined workers per lead session**, using Pi **1.5.2** and `pi-subagents` **0.88.0**. See [usage/configuration](../../agent-toolkit/integrations/pi/README.md) and [evidence](pi-background-verification.md).
+Status: **installed and locally smoke-tested**. Current adapter **0.4.1** supports **five concurrent task-defined workers per lead session**, using Pi **1.5.2** and `pi-subagents` **0.88.0**. See [usage/configuration](../../agent-toolkit/integrations/pi/README.md) and [evidence](pi-background-verification.md).
 
 ## Execution model
 

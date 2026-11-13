@@ -4,7 +4,7 @@ This is a research and design reference for [agent_toolkit](https://github.com/S
 
 ## Implementation status
 
-The design sections below retain the original proposals. Toolkit release **0.4.0** includes the repository-side pieces and an optional locally verified Pi background adapter:
+The design sections below retain the original proposals. Toolkit release **0.4.1** includes the repository-side pieces and an optional locally verified Pi background adapter:
 
 | Area | Status and source |
 |---|---|

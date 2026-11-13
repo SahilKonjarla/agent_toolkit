@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.4.1
+
+- Request detailed provider-supplied activity captions for official OpenAI/Codex Responses reasoning requests through Pi's public provider-payload hook, instead of changing agent-progress commentary.
+- Preserve reasoning effort, text verbosity and other payload fields; leave disabled thinking, unsupported/proxy endpoints and explicit summary choices unchanged. Add a startup opt-out for provider-default summaries.
+- Add payload-preservation/guard tests and real installed-Pi hook-wiring coverage. Caption wording remains provider-controlled; historical captions and extension-denied background workers are unchanged. Five-worker/two-view limits and execution lifecycle are unchanged.
+
 ## 0.4.0
 
 - Add on-demand `agent_inspector` read-only Herdr views, capped at two with persisted owner/task/process proof, reuse across reload, and close independent from worker execution.

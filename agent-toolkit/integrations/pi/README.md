@@ -1,6 +1,6 @@
 # Pi background integration
 
-Adapter **0.4.0**, verified locally with Pi **1.5.2** and `pi-subagents` **0.88.0**. The lead chooses independent tasks and roles as needed, with **at most five concurrent background workers per lead session**. There is no fixed specialist roster or cumulative five-launch limit.
+Adapter **0.4.1**, verified locally with Pi **1.5.2** and `pi-subagents` **0.88.0**. The lead chooses independent tasks and roles as needed, with **at most five concurrent background workers per lead session**. There is no fixed specialist roster or cumulative five-launch limit.
 
 ## Task-defined dispatch
 
@@ -40,6 +40,16 @@ Implementation starts from a clean source checkout in a managed worktree. A dirt
 `/subagents-fleet` provides native transcripts, model info, steering and stop controls. Native completion notices return results and surface failures. `subagent` status/control actions remain available. A retry is a fresh scoped task after inspecting failure/partial work, not an automatic duplicate dispatch.
 
 Public RPC events drive `toolkit:agents-status:v1`; the separate local `~/code/pi-extensions/footer/` consumer shows `Agent`/`Agents`, active count, short role and elapsed time, with details yielding to warnings at narrow widths. The live agent segment disappears when active/attention counts reach zero. `fleetView:false` and `asyncWidget:false` hide duplicate persistent runner rows such as `Async runs`; `/subagents-fleet` and completion history remain available. No tasks or transcripts enter the footer, and no private runner files are scraped. The lead checks pinned refs and marks stale evidence; the public fleet DTO does not carry reviewed refs.
+
+### Expanded activity captions
+
+The short bold captions in Pi's transcript (for example, “Preparing SQL journal adapter”) come from provider-supplied reasoning summaries, not the footer activity tracker or the agent-progress instruction text. Pi renders the returned summary as Markdown; it is not hiding a longer body when the provider sends only a heading.
+
+`activity-captions.ts` uses the documented `before_provider_request` hook to change an existing `reasoning.summary: "auto"` to `"detailed"`. It applies only to reasoning models using the official OpenAI Responses or OpenAI Codex Responses provider/API/endpoint combinations. It preserves reasoning effort, text verbosity, input, tools, instructions and other payload fields. Disabled thinking, absent/malformed reasoning, unsupported/proxy endpoints and explicitly chosen summary modes are left alone. No request payloads are logged and no installed provider or renderer code is patched.
+
+This requests richer user-facing summaries; the provider still controls wording, length and availability, so it cannot guarantee a paragraph for each caption. Existing transcript captions cannot be expanded retroactively. Extension-denied background workers do not inherit the lead hook; their isolation is unchanged. This is not a change to supervisor commentary, the sidebar/footer, worker counts or terminal layout.
+
+After ongoing work finishes, `/reload` each Pi chat where the adapter should request detailed captions. It applies to subsequent requests in those chats. To keep the original provider-default summary behavior, start Pi with `PI_TOOLKIT_ACTIVITY_CAPTIONS=default pi`.
 
 ## Herdr visibility and on-demand inspection
 

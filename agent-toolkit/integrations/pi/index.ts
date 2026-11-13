@@ -6,11 +6,13 @@ import { projectStatus, requestRpc } from "./runtime-status";
 import { applyLaunchPolicy } from "./launch-policy";
 import { registerBackgroundTask, TASK_TOOLS } from "./background-task";
 import { registerHerdrPresentation } from "./herdr-presentation";
+import { registerActivityCaptions } from "./activity-captions";
 
 const STATUS_EVENT = "toolkit:agents-status:v1";
 const READY_EVENT = "subagents:rpc:v1:ready";
 
 export default function (pi: ExtensionAPI) {
+  registerActivityCaptions(pi);
   let restriction: { dispose(): void } | undefined;
   let generation = 0;
   let active = false;

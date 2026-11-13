@@ -14,12 +14,17 @@ test('installed Pi binds task-defined workers and prevents fan-out bypass', asyn
     additionalExtensionPaths: [join(sdk.getAgentDir(), 'npm/node_modules/pi-subagents'), new URL('../index.ts', import.meta.url).pathname],
   });
   await loader.reload();
-  const { session } = await sdk.createAgentSession({ cwd: tmpdir(), resourceLoader: loader, sessionManager: sdk.SessionManager.inMemory(tmpdir()) });
+  const model = { api: 'openai-responses', provider: 'openai', id: 'caption-fixture', name: 'Caption fixture', baseUrl: 'https://api.openai.com/v1', reasoning: true, input: ['text'], cost: { input: 0, output: 0, cacheRead: 0, cacheWrite: 0 }, contextWindow: 32000, maxTokens: 1024 };
+  const { session } = await sdk.createAgentSession({ cwd: tmpdir(), model, thinkingLevel: 'high', resourceLoader: loader, sessionManager: sdk.SessionManager.inMemory(tmpdir()) });
   const errors = [];
   try {
     await session.bindExtensions({ onError: error => errors.push(String(error.error)) });
     assert.deepEqual(errors, []);
     assert.ok(session.extensionRunner.getToolDefinition('background_task'));
+    const payload = { model: model.id, reasoning: { effort: 'high', summary: 'auto' }, input: [], stream: true };
+    const captionRequest = await session.extensionRunner.emitBeforeProviderRequest(payload);
+    assert.deepEqual(captionRequest, process.env.PI_TOOLKIT_ACTIVITY_CAPTIONS === 'default' ? payload : { ...payload, reasoning: { effort: 'high', summary: 'detailed' } });
+    assert.equal(payload.reasoning.summary, 'auto');
     const input = { agent: 'delegate', async: false };
     const result = await session.extensionRunner.emitToolCall({ type: 'tool_call', toolName: 'subagent', toolCallId: 'policy-check', input });
     assert.ok(!result?.block);
