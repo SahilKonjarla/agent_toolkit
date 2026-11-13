@@ -12,7 +12,7 @@ A reusable, project-agnostic software-delivery toolkit for supervised agent work
 ## What this toolkit is not
 
 - Not a multi-agent runtime; optional approved delegation uses an external runner or manual sessions.
-- Not automatic Herdr pane creation.
+- Not automatic independent Pi-chat/workspace creation. Bounded on-demand observer panes are supported by the optional Pi adapter.
 - Not a deployment/infrastructure/provisioning system.
 - Not a secret store.
 - Not tied to one model name or proprietary command syntax.
@@ -22,7 +22,7 @@ A reusable, project-agnostic software-delivery toolkit for supervised agent work
 - **Pi** runs customized agent workflows.
 - **Codex models** provide reasoning and coding capability to Pi.
 - **Codex CLI** may be launched separately as an implementation or review worker.
-- **Herdr** manages terminal sessions only; it does not provide intelligence or Git isolation.
+- **Herdr** organizes terminals and worktree-backed workspaces. Pi owns task intelligence/execution; terminal layout alone does not isolate Git writes.
 - **The toolkit** defines reusable roles, standards, workflows, skills, contracts, and setup behavior.
 
 ## Repository structure
@@ -183,7 +183,7 @@ Production Readiness
 Tests or Logs
 ```
 
-Herdr does not provide model intelligence, automatic delegation, or Git isolation. Transfer outputs through stable artifacts, not full chat histories.
+Herdr can manage worktree-backed workspaces, but terminal panes alone do not isolate writes or grant task authority. The optional Pi adapter supports at most two on-demand read-only observers; independent Pi chats/workspaces remain manual/explicit until shared admission is implemented. Transfer outputs through stable artifacts, not full chat histories. See `docs/toolkit-design/herdr-observers.md` in the toolkit checkout for configuration, verification and reload/update distinctions.
 
 ## Troubleshooting
 

@@ -1,6 +1,6 @@
 # Pi background integration
 
-Adapter **0.3.1**, verified locally with Pi **1.5.2** and `pi-subagents` **0.88.0**. The lead chooses independent tasks and roles as needed, with **at most five concurrent background workers per lead session**. There is no fixed specialist roster or cumulative five-launch limit.
+Adapter **0.4.0**, verified locally with Pi **1.5.2** and `pi-subagents` **0.88.0**. The lead chooses independent tasks and roles as needed, with **at most five concurrent background workers per lead session**. There is no fixed specialist roster or cumulative five-launch limit.
 
 ## Task-defined dispatch
 
@@ -41,6 +41,14 @@ Implementation starts from a clean source checkout in a managed worktree. A dirt
 
 Public RPC events drive `toolkit:agents-status:v1`; the separate local `~/code/pi-extensions/footer/` consumer shows `Agent`/`Agents`, active count, short role and elapsed time, with details yielding to warnings at narrow widths. The live agent segment disappears when active/attention counts reach zero. `fleetView:false` and `asyncWidget:false` hide duplicate persistent runner rows such as `Async runs`; `/subagents-fleet` and completion history remain available. No tasks or transcripts enter the footer, and no private runner files are scraped. The lead checks pinned refs and marks stale evidence; the public fleet DTO does not carry reviewed refs.
 
+## Herdr visibility and on-demand inspection
+
+`agent_inspector` accepts `action:open|status|close` and an exact owned task ID for open/close. At most two read-only viewers are reserved per owning chat/server. Opens use the caller pane and `--no-focus`; repeated opens reuse the same verified viewer, including after reload. Closing a view does not stop its worker. Task/nonce/receipt, terminal identity, foreground PID and process-start identity must agree; unknown launches or changed occupants fail closed.
+
+The viewer displays documented public native status/output artifacts only. It cannot execute, steer or stop tasks. File reads are bounded/non-blocking and reject non-regular files; terminal control sequences are removed. Native fleet/history remains available for controls. Model-driven native inspector open/close calls are redirected to the bounded tool; manual human panes remain outside its cap.
+
+Herdr's sidebar can display the existing native `$summary` token, including active worker labels while the lead is idle. Generic, rate-limited failure and real human-input-dialog notifications complement that display; ordinary successful completions stay quiet. The managed Herdr Pi lifecycle hook is unchanged. Independent Pi chats/workspaces remain deferred. See [setup, safety limits and live evidence](../../../docs/toolkit-design/herdr-observers.md).
+
 ## Installation and activation
 
 ```bash
@@ -54,7 +62,7 @@ Merge `runner-config.json` into `~/.pi/agent/extensions/subagent/config.json`, p
 { "subagents": { "defaultExtensions": [], "defaultModel": "inherit", "defaultThinking": "low" } }
 ```
 
-The current machine is already configured. Moving the checkout breaks the installed local adapter path. After this adapter/config update, run **`/reload`**. If the new `background_task` tool is missing in an old recorded session, restart Pi, resume it and `/reload`. Upstream compiled-package upgrades require restart.
+The current machine is already configured. Moving the checkout breaks the installed local adapter path. After this adapter/config update, run **`/reload` in each open Pi chat**; it does not broadcast to other instances. A project's separate toolkit checkout/skills/guidance still needs its own deliberate update, and `update_toolkit.py` inspects/fetches rather than applying upgrades. If the new `background_task` tool is missing in an old recorded session, restart Pi, resume it and `/reload`. Upstream compiled-package upgrades require restart.
 
 ## Verification
 
@@ -64,7 +72,7 @@ npm test
 node verify-runtime.mjs --live
 ```
 
-Tests use the current managed Pi install; set `PI_NODE_MODULES` for another layout. The opt-in live smoke uses existing authentication and the approved `PI_PROVIDER`/`PI_MODEL`, finite fixture commands and disposable Git/worktree edits. It verifies five simultaneous task-defined test workers, rejection of a sixth, reload survival, actual unittest output, tool restrictions, slot reuse beyond five total launches, and isolated implementation with a captured patch. Reports are retained in the private temporary fixture. See [evidence](../../../docs/toolkit-design/pi-background-verification.md).
+Tests use the current managed Pi install; set `PI_NODE_MODULES` for another layout. `node verify-herdr.mjs --live` separately authorizes one no-focus observer and a finite fixture worker inside Herdr, verifying view reuse, reload recovery and close without stopping execution. The opt-in live smoke uses existing authentication and the approved `PI_PROVIDER`/`PI_MODEL`, finite fixture commands and disposable Git/worktree edits. It verifies five simultaneous task-defined test workers, rejection of a sixth, reload survival, actual unittest output, tool restrictions, slot reuse beyond five total launches, and isolated implementation with a captured patch. Reports are retained in the private temporary fixture. See [evidence](../../../docs/toolkit-design/pi-background-verification.md).
 
 ## Known upstream limitation and rollback
 

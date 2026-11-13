@@ -26,7 +26,7 @@ export function taskDefinition(role: string, kind: TaskKind) {
 
 // This tool only adapts task briefs to the runner's public APIs. The runner owns
 // atomic five-slot admission, processes, deadlines, results and cancellation.
-export function registerBackgroundTask(pi: ExtensionAPI, ready: () => boolean) {
+export function registerBackgroundTask(pi: ExtensionAPI, ready: () => boolean, onDispatch?: (task: { id: string; asyncDir: string; role: string }) => Promise<void>) {
   const registrations = new Set<{ dispose(): void }>();
   const byRun = new Map<string, { dispose(): void }>();
   const stopComplete = pi.events.on("subagent:async-complete", (event: any) => {
@@ -71,6 +71,10 @@ export function registerBackgroundTask(pi: ExtensionAPI, ready: () => boolean) {
       }
       const runId = data.details?.runId ?? data.details?.asyncId ?? data.details?.id;
       if (runId) byRun.set(runId, registration);
+      if (runId && typeof data.details?.asyncDir === "string" && onDispatch) {
+        // Inspector bookkeeping is not execution success and must never invite a duplicate dispatch.
+        try { await onDispatch({ id: runId, asyncDir: data.details.asyncDir, role }); } catch {}
+      }
       return { content: [{ type: "text", text: data.text || `Background task dispatched: ${runId ?? name}` }], details: data.details ?? {} };
     },
   });

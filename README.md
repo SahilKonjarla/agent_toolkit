@@ -41,7 +41,7 @@ The toolkit is designed to be copied, submoduled, or subtree-included into futur
 - **Pi** runs the customized agent workflows.
 - **Codex models** provide reasoning and coding capability to Pi.
 - **Codex CLI** can be used separately as an implementation or review worker.
-- **Herdr** only manages terminal sessions; it does not provide reasoning, delegation, or Git isolation.
+- **Herdr** organizes terminal sessions and can manage worktree-backed workspaces. Pi owns native execution, budgets and task lifecycle; toolkit-created observer panes provide visibility, not extra workers. A pane alone is not Git isolation.
 - **The toolkit** defines roles, standards, workflows, contracts, skills, templates, and setup behavior.
 
 ### Human-supervised by default
@@ -89,6 +89,12 @@ Users should generally invoke workflows by outcome, not by manually choosing age
 Eight task skills under `agent-toolkit/skills/quality/` cover PR review, CI triage, review feedback, preview QA, async jobs, API compatibility, observability and documentation drift. See [the skill index](agent-toolkit/skills/quality/README.md). Downstream initialization/skill sync exposes them alongside imported skills without changing vendor metadata.
 
 Implementation/review workflows now use focused review selection, diff-triggered logging/docs checks and richer evidence artifacts. [Delegation policy](agent-toolkit/standards/delegation-policy.md) defines optional background work. The [Pi runtime adapter](agent-toolkit/integrations/pi/README.md) is installed and smoke-tested locally with up to five concurrent task-defined workers, approved test/shell work, isolated implementation and event-driven footer status; see [integration evidence and limitations](docs/toolkit-design/pi-background-agents.md). Installation on other machines remains opt-in.
+
+## Herdr visibility and project updates
+
+The optional Pi adapter provides `agent_inspector` open/status/close for at most two owned read-only views of existing tasks, with no extra worker or focus change. Herdr's sidebar can show native worker summaries even while the lead is idle. Automatic independent Pi chats/workspaces remain deferred. See [observer behavior and verification](docs/toolkit-design/herdr-observers.md).
+
+`/reload` affects one Pi instance. Global extensions share files, but each open chat reloads separately. Updating that runtime does not update another project's checked-in toolkit, skills or generated guidance. `update_toolkit.py` inspects/fetches only; preserve local changes and update the actual checkout separately, then synchronize skills as appropriate.
 
 ## Imported skills
 

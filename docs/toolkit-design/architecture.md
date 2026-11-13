@@ -23,9 +23,15 @@ Version one is human-supervised. Agents inspect and propose freely, then request
 
 ## Coordination
 
-Pi is the primary runtime. Codex CLI can be an independent worker. Herdr can arrange manual terminal sessions but does not provide orchestration or isolation. Stable artifacts replace chat-history transfer.
+Pi is the primary runtime. Codex CLI can be an independent worker. Herdr organizes terminals and can manage worktree-backed workspaces; terminal layout alone does not isolate writes or grant task authority. Stable artifacts replace chat-history transfer.
 
 Optional delegation follows `agent-toolkit/standards/delegation-policy.md`; no runner is bundled. The optional `agent-toolkit/integrations/pi/` adapter registers ephemeral task-defined workers through pi-subagents' public runtime-agent API, selects tools by task kind, and projects public RPC status into local footer events. Five atomic background slots each admit one child; composite/nested fan-out cannot multiply the cap. Approved test work gets shell access; approved implementation receives a managed worktree. Local installation, live verification and limitations are recorded in `pi-background-agents.md`. Workflows fall back to sequential execution when compatible approved dispatch is unavailable.
+
+## Herdr presentation seam
+
+The optional adapter records owner-scoped native dispatch bindings and exposes `agent_inspector` for at most two read-only views. Herdr remains an external host; the viewer reads only documented public status/output artifacts and never executes or controls jobs. A private manifest, token-bound receipt, foreground process/start identity, and serialized reservations govern reuse/close across reload. CLI admission is separate from verified process startup. Existing upstream metadata remains the source of native active-job summaries; the adapter adds filtered notifications, not a competing lifecycle publisher.
+
+Independent Pi chats/workspaces and shared cross-chat admission remain deferred. See `herdr-observers.md` for implemented behavior and `herdr-bounded-orchestration.md` for the broader proposal.
 
 ## Owned skill discovery
 

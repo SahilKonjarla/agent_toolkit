@@ -4,7 +4,7 @@ This is a research and design reference for [agent_toolkit](https://github.com/S
 
 ## Implementation status
 
-The design sections below retain the original proposals. Toolkit release **0.3.0** includes the repository-side pieces and an optional locally verified Pi background adapter:
+The design sections below retain the original proposals. Toolkit release **0.4.0** includes the repository-side pieces and an optional locally verified Pi background adapter:
 
 | Area | Status and source |
 |---|---|
@@ -16,6 +16,7 @@ The design sections below retain the original proposals. Toolkit release **0.3.0
 | Background delegation policy | [Policy and dispatch/evidence rules](agent-toolkit/standards/delegation-policy.md) added; compatible external execution remains optional. |
 | Background runtime and fleet/footer job UI | Installed locally: Pi 1.5.2 + pi-subagents 0.88.0 + [task-defined adapter](agent-toolkit/integrations/pi/README.md). Up to five concurrent workers, chosen as needed, can inspect, run approved tests/commands, or implement in isolated worktrees. Live checks verified five simultaneous test jobs, sixth-job rejection, slot reuse and an isolated implementation patch. Public job status is connected to the local footer; see [evidence and limitations](docs/toolkit-design/pi-background-verification.md). Visual acceptance remains a user check. |
 | Delegation value tracking | Optional worker evidence/decision-impact fields added; no comparative run data collected yet. |
+| Herdr visibility and observers | Implemented sidebar native-work summaries, filtered failure/human-dialog notifications, and `agent_inspector` with at most two owned read-only views. Live open/reuse/reload/close was verified without stopping the worker. Independent Pi chats/workspaces and shared cross-chat admission remain deferred; see [evidence and reload/update distinctions](docs/toolkit-design/herdr-observers.md). |
 
 Imported `.agents/skills/` sources and vendor lock metadata remain unchanged. The task skills remain toolkit-owned guidance, not GitHub/browser tool implementations. The optional runtime adapter uses external public APIs rather than implementing a new runner. Tracked Python bytecode has also been removed, with cache/OS/runtime ignore rules added.
 

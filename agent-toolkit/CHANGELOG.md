@@ -1,5 +1,12 @@
 # Changelog
 
+## 0.4.0
+
+- Add on-demand `agent_inspector` read-only Herdr views, capped at two with persisted owner/task/process proof, reuse across reload, and close independent from worker execution.
+- Show existing native worker summaries in Herdr; add rate-limited failure/human-dialog notifications without competing lifecycle publishers.
+- Guard against unknown launch outcomes, malformed authority, terminal-control injection and non-regular/FIFO artifacts; verify owned view open/reuse/reload/close while a real worker continues.
+- Keep five-worker execution unchanged and automatic peer chats/workspaces deferred. Clarify per-chat reload versus separately updating project toolkit checkouts.
+
 ## 0.3.1
 
 - Keep one live Agent/Agents footer surface and hide duplicate persistent Async runs/FleetView rows; preserve the fleet inspector and completion history.

@@ -5,6 +5,8 @@ export const DEFAULT_TIMEOUT_MS = 600000;
 
 export function applyLaunchPolicy(input: Record<string, any>): string | undefined {
   if (input.action) {
+    if (["inspector.open", "inspector.close"].includes(input.action)) return "Use agent_inspector for bounded, owner-checked Herdr views; native inspector actions bypass the toolkit's two-view policy.";
+    if (input.action === "project.open") return "Automatic peer chats/workspaces are deferred until shared cross-chat admission is implemented. Use native background tasks or request a separate manual-session plan.";
     if (input.action === "resume") return "Start a fresh single-agent job; retained jobs may carry older fan-out contracts.";
     return undefined;
   }
