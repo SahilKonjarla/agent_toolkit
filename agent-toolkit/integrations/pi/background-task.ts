@@ -2,6 +2,7 @@ import type { ExtensionAPI } from "@earendil-works/pi-coding-agent";
 import { Type } from "typebox";
 import { DEFAULT_TIMEOUT_MS } from "./launch-policy";
 import { requestRpc } from "./runtime-status";
+import { TASK_FOCUS_GUIDANCE } from "./task-focus";
 
 export type TaskKind = "analysis" | "tests" | "implementation";
 export const TASK_TOOLS: Record<TaskKind, string[]> = {
@@ -19,6 +20,7 @@ export function taskDefinition(role: string, kind: TaskKind) {
       "The task brief defines your exact goal, scope, pinned source, approved commands/paths, acceptance criteria and output. Read applicable AGENTS.md and relevant project configuration/context when present; follow project instructions and toolkit approval/secrets/Git rules.",
       "Only the lead delegates. Do not launch nested agents. Do not stage, commit, push, deploy, install dependencies, read secrets/.env, or expand scope without explicit approval in the brief.",
       kind === "analysis" ? "Inspect and report only. No shell, tests, or edits." : kind === "tests" ? "Run only the approved finite test/check commands. Do not edit source or remediate failures; report them. Test-generated files are not permission to change application behavior." : "Implement only the approved slice in your isolated worktree. Do not integrate into the lead checkout. Report changed paths and verification; the lead reviews and integrates the patch.",
+      TASK_FOCUS_GUIDANCE,
       "Ask the supervisor for an unapproved decision instead of guessing. Return the result, exact commands/outcomes, limitations and next action. A failed test is a failed test, even when the worker itself completed normally.",
     ].join("\n"),
   };
@@ -41,7 +43,7 @@ export function registerBackgroundTask(pi: ExtensionAPI, ready: () => boolean, o
     parameters: Type.Object({
       role: Type.String({ minLength: 1, maxLength: 80, description: "Task-specific role, e.g. auth-tests or API-compatibility; no fixed roster." }),
       kind: Type.Union([Type.Literal("analysis"), Type.Literal("tests"), Type.Literal("implementation")]),
-      task: Type.String({ minLength: 1, maxLength: 30000, description: "Goal, bounded scope, approved commands/paths, pinned source and expected output." }),
+      task: Type.String({ minLength: 1, maxLength: 30000, description: "Goal/acceptance criteria, bounded scope and exclusions, approved commands/paths, pinned source and expected output. Incidental findings are deferred unless they block this task; blocker fixes still require write approval." }),
       cwd: Type.Optional(Type.String({ minLength: 1 })),
       timeoutMs: Type.Optional(Type.Integer({ minimum: 1000, maximum: 3600000 })),
     }),

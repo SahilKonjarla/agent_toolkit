@@ -28,6 +28,10 @@ Approval is mandatory before:
 - destructive commands
 - remediation after a review
 
+## Remediation scope
+
+Approval is necessary, not a reason to pursue incidental findings. Apply `task-focus-policy.md`: remediate only issues that block the original task or are explicitly part of the user's requested scope. Defer non-blocking discoveries and continue. A blocker outside approved actions/write scope requires the smallest additional approval; all mandatory gates above remain intact.
+
 ## Read-only actions allowed without approval
 
 - Reading files

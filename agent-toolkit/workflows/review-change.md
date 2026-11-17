@@ -43,9 +43,9 @@ Platform Engineer for Docker/CI/CD/deployment changes. Production Readiness Engi
 2. **Find source of truth** — Locate spec/ticket and standards.
 3. **Classify relevance** — Use `../standards/review-specialists.md` to select diff-triggered passes and relevant platform/production/security roles. GitHub PRs use `../skills/quality/review-pr/SKILL.md`; failing checks or unresolved threads trigger `triage-ci` or `review-feedback` in that directory.
 4. **Review** — Report Standards and Spec separately against the same pinned target. Run selected specialists, apply logging/docs reminders in `../standards/engineering-principles.md`, and use `../standards/delegation-policy.md` for approved workers; otherwise review sequentially. Missing spec or failed worker is an evidence gap.
-5. **Report** — Recheck the target, mark stale results, and produce `review-report.md`, grouping findings by severity/type and deduplicating prior comments. Link the test matrix, browser evidence and worker results; state actual validation.
+5. **Report** — Recheck the target, mark stale results, and produce `review-report.md`, grouping findings by severity/type and deduplicating prior comments. Apply `../standards/task-focus-policy.md`: separate demonstrated task/required-verification blockers from deferred incidental findings; severity alone is not a remediation mandate. Link the test matrix, browser evidence and worker results; state actual validation.
 6. **Remediation approval** — Stop before edits.
-7. **Verification** — If remediation is approved, verify fixes and update report.
+7. **Verification** — If task-relevant remediation is approved, verify fixes and update report. Report deferred non-blocking findings without treating their remediation as a completion gate.
 
 ## Approval gates
 

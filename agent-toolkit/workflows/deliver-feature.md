@@ -49,12 +49,12 @@ Platform Engineer or Production Readiness Engineer only if the feature affects D
 3. **Specification approval** — Stop until human approves scope, artifacts, roles, and model/session plan.
 4. **Implementation plan** — Application Engineer states files/areas likely affected and validation plan.
 5. **Implementation approval** — Stop before writes unless approval already covers the scope.
-6. **Vertical-slice implementation** — Implement small slices, test at approved seams, avoid speculative abstractions. Apply diff-triggered logging/docs checks in `../standards/engineering-principles.md`; carry a behavior-to-test matrix in the implementation report. Independent compatibility/regression scouting may run under `../standards/delegation-policy.md` within the approved session budget.
+6. **Vertical-slice implementation** — Implement small slices, test at approved seams, avoid speculative abstractions. Triage incidental findings with `../standards/task-focus-policy.md`; defer non-blocking errors/cleanup and continue the approved task. Apply diff-triggered logging/docs checks in `../standards/engineering-principles.md`; carry a behavior-to-test matrix in the implementation report. Independent compatibility/regression scouting may run under `../standards/delegation-policy.md` within the approved session budget.
 7. **Implementation report** — Produce `implementation-report.md`; include overrides consulted and suggested commit message if useful.
 8. **Review approval** — Human approves handoff to review and any broad validation commands.
 9. **Quality review** — Quality Engineer reviews the finished pinned diff on separate Standards/Spec axes and selects focused passes using `../standards/review-specialists.md`. Run approved checks and preview QA where triggered, reuse implementation artifacts, and produce `review-report.md`. Reconcile early scout results against the finished diff rather than treating them as final review.
-10. **Remediation approval** — Stop before any remediation.
-11. **Scoped remediation and verification** — Relevant engineer remediates approved findings; Quality verifies.
+10. **Remediation approval** — Identify demonstrated blockers or explicitly requested fixes; defer incidental non-blocking findings. Obtain approval before post-review remediation.
+11. **Scoped remediation and verification** — Relevant engineer makes the smallest approved task-relevant fixes; Quality verifies the affected behavior. Approval alone is not a mandate to fix unrelated findings.
 12. **Final completion report** — Summarize status, files, validation, risks, overrides consulted, and next step.
 
 ## Approval gates
@@ -79,7 +79,7 @@ Avoid repeated full scans. Reuse specs and reports. Do not invoke optional roles
 
 ## Failure and rollback behavior
 
-Stop on unexpected repo state, failed validation, unapproved scope expansion, risky irreversible choice, or unclear acceptance criteria. Do not rollback destructively without approval.
+Pause the affected path on unsafe/unexpected repo state, task-blocking validation failure, unapproved scope expansion, risky irreversible choice, or unclear acceptance criteria. Record unrelated non-blocking failures and continue approved work. Required verification that cannot pass remains a reported gap, not a clean completion. Follow `../standards/task-focus-policy.md`; do not rollback destructively without approval.
 
 ## Completion criteria
 

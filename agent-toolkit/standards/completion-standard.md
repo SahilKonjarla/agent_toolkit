@@ -15,4 +15,6 @@ Every implementation completion report must include:
 
 For personalization/overrides, list relevant `.agent-config/overrides/` files read for the task, or state `None consulted` with a brief reason. Do not include secret values or private data from override files.
 
+Separate the requested outcome, necessary blocker fixes (and why they were necessary), required verification gaps, and observed incidental findings deferred under `task-focus-policy.md`. Non-blocking findings alone do not prevent completion; do not run an extra audit or fix them merely to clean up the report.
+
 Do not claim commands, tests, checks, reviews, or approvals happened when they did not. Report skipped or unavailable validation honestly.

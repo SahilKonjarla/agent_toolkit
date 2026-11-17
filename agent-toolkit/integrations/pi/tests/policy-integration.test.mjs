@@ -21,6 +21,11 @@ test('installed Pi binds task-defined workers and prevents fan-out bypass', asyn
     await session.bindExtensions({ onError: error => errors.push(String(error.error)) });
     assert.deepEqual(errors, []);
     assert.ok(session.extensionRunner.getToolDefinition('background_task'));
+    const prompt = await session.extensionRunner.emitBeforeAgentStart(
+      { messageType: 'user', prompt: 'Implement only the requested task.' }, { cwd: tmpdir() },
+    );
+    assert.equal(prompt.systemPromptOptions.sections.toolkit_task_focus,
+      (await readFile(new URL('../../../standards/task-focus-policy.md', import.meta.url), 'utf8')).trim());
     const payload = { model: model.id, reasoning: { effort: 'high', summary: 'auto' }, input: [], stream: true };
     const captionRequest = await session.extensionRunner.emitBeforeProviderRequest(payload);
     assert.deepEqual(captionRequest, process.env.PI_TOOLKIT_ACTIVITY_CAPTIONS === 'default' ? payload : { ...payload, reasoning: { effort: 'high', summary: 'detailed' } });

@@ -13,6 +13,10 @@
 - Do not claim commands were run when they were not.
 - Report incomplete work honestly.
 
+## Task focus
+
+When an incidental error, warning or improvement is discovered, apply `task-focus-policy.md`: demonstrate whether it blocks the requested implementation, required functionality or required verification. Otherwise note/defer it and continue the original task. Severity alone does not decide relevance; blocking status does not grant approval. Required scoped documentation/logging checks below still apply.
+
 ## Diff-triggered logging and documentation checks
 
 Apply these during implementation and again during diff review. Record a result or explicit not-applicable reason for each triggered row in the implementation/review artifact.

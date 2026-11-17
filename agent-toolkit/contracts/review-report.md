@@ -63,7 +63,7 @@ Style-only observations.
 
 ## Finding evidence
 
-For each finding include severity, type, path/line or permalink, concrete consequence, evidence and confidence. Missing validation is a limitation, not proof of failure.
+For each finding include severity, type, path/line or permalink, concrete consequence, evidence and confidence. Separately state whether it blocks the original task or required verification, with the causal link; severity alone does not decide remediation scope. Missing validation is a limitation, not proof of failure.
 
 ## Test evidence
 
@@ -79,7 +79,11 @@ State whether security/platform/production review is relevant and why.
 
 ## Required remediation
 
-Specific items requiring approval before edits.
+Demonstrated task/required-verification blockers or explicitly requested fixes, each with its necessity and smallest proposed change. Approval is required before edits; do not promote incidental findings into required work.
+
+## Deferred incidental findings
+
+Observed issues outside the requested outcome that do not block it: concise evidence/consequence and deferral reason. Preserve genuine defects here even when they are not optional improvements. Do not create extra investigations or tickets just to populate this section.
 
 ## Optional improvements
 

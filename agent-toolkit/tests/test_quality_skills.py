@@ -46,7 +46,7 @@ class QualitySkillTests(unittest.TestCase):
             generated = mod.generated_agents_md(mod.default_config(Path(td)))
         template = (TOOLKIT / 'templates' / 'AGENTS.md').read_text(encoding='utf-8')
         for guidance in [generated, template]:
-            for target in ['skills/quality/README.md', 'standards/delegation-policy.md', 'standards/review-specialists.md']:
+            for target in ['skills/quality/README.md', 'standards/delegation-policy.md', 'standards/review-specialists.md', 'standards/task-focus-policy.md']:
                 self.assertIn(f'agent-toolkit/{target}', guidance)
                 self.assertTrue((TOOLKIT / target).is_file())
 

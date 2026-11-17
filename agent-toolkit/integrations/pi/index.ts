@@ -7,6 +7,7 @@ import { applyLaunchPolicy } from "./launch-policy";
 import { registerBackgroundTask, TASK_TOOLS } from "./background-task";
 import { registerHerdrPresentation } from "./herdr-presentation";
 import { registerActivityCaptions } from "./activity-captions";
+import { TASK_FOCUS_GUIDANCE } from "./task-focus";
 
 const STATUS_EVENT = "toolkit:agents-status:v1";
 const READY_EVENT = "subagents:rpc:v1:ready";
@@ -106,6 +107,7 @@ export default function (pi: ExtensionAPI) {
     }
   });
   pi.on("before_agent_start", (event) => {
+    event.systemPromptOptions.sections.toolkit_task_focus = TASK_FOCUS_GUIDANCE;
     if (!active || !restriction) return;
     event.systemPromptOptions.sections.toolkit_delegation = [
       "Automatically use background_task for independent bounded work that lets the lead continue: analysis, approved test/check commands, or approved isolated implementation. Keep small tasks and coupled decisions in the lead.",

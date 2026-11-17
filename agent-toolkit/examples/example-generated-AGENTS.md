@@ -20,6 +20,8 @@ Inspect before editing. Ask approval before writes, major workflow phase transit
 
 During implementation/review, apply diff-triggered logging/docs checks in `agent-toolkit/standards/engineering-principles.md`. Select focused review passes through `agent-toolkit/standards/review-specialists.md` and keep Standards/Spec results separate.
 
+When incidental errors or improvements arise, apply `agent-toolkit/standards/task-focus-policy.md`: remediate demonstrated task/required-verification blockers within approval; note/defer non-blocking findings and continue the original task.
+
 ## Completion reports
 
 Include summary, files changed, commands run, tests run, assumptions, limitations, risks, and next step.

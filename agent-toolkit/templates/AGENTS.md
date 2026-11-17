@@ -69,6 +69,8 @@ Use commands from `agent-project.yaml`. Do not invent commands without inspectin
 
 Inspect before editing, prefer existing patterns, keep changes scoped, test behavioral changes, and report honestly. During implementation/review apply diff-triggered logging/docs checks in `agent-toolkit/standards/engineering-principles.md`; select focused review passes via `agent-toolkit/standards/review-specialists.md`.
 
+When incidental errors or improvements arise, apply `agent-toolkit/standards/task-focus-policy.md`: fix only demonstrated blockers to the requested implementation, required functionality or necessary verification within approval; note/defer non-blocking findings and continue. Keep required scoped standards/docs checks intact.
+
 When using imported Matt Pocock skills, apply toolkit standards first. Treat slash-command, sub-agent, commit, branch, temp-file, or root-`CONTEXT.md` assumptions as guidance that must be adapted to this project's approval, Git, handoff, and context policies.
 
 ## Approval policy

@@ -10,7 +10,7 @@ When asynchronous delegation is available and covered by the approved plan, auto
 
 Before dispatch, give each worker:
 
-- Task, role and bounded scope; excluded actions and approval limits.
+- Task, acceptance criteria, role and bounded scope; excluded actions and approval limits. State what would actually block the task, not an open-ended error-cleanup brief.
 - Repository and pinned ref/diff snapshot; relevant paths and spec/acceptance criteria.
 - Required output contract and artifact location (saving requires approval).
 - Model capability tier, deadline and result-collection decision point.
@@ -22,6 +22,8 @@ Use the Pi adapter's `background_task` for one independently tracked job at a ti
 Choose permissions by task kind: analysis receives read/search tools; approved tests/checks add shell access; approved implementation adds edit/write tools and an isolated worktree. Shell commands, writes, tests, network side effects, worktree creation and access to secrets remain subject to existing approval policy; delegating does not grant permission. A worker can perform any bounded approved task appropriate to its tools, not just one of the canonical role names.
 
 For background tests, pass the exact approved finite commands and identify the source snapshot. Tests on a live lead checkout can race ongoing edits; report that limitation or choose an approved snapshot/worktree. Test execution does not authorize remediation or source edits. Use a separately approved worktree for each writing worker. The lead reviews patches and integrates deliberately; workers do not merge or overwrite each other's edits.
+
+All workers follow `task-focus-policy.md`: report incidental non-blocking findings without expanding the job or launching cleanup work. A blocker needs a causal link to the assigned outcome or required verification; analysis/test-only workers report it rather than editing source. The lead applies the same relevance and approval checks when collecting results.
 
 ## Async lifecycle
 

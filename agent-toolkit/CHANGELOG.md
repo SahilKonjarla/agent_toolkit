@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.4.2
+
+- Add a canonical task-focus policy: note/defer incidental non-blocking findings, remediate only demonstrated task/required-verification blockers or explicitly requested work, and return to the original task.
+- Inject the same policy into the Pi lead and all worker kinds; preserve approval, safety and read-only/test-only boundaries. Add real Pi prompt-wiring and canonical-policy coverage.
+- Reconcile implementation/review workflows, severity, reporting and generated guidance with blocking-only remediation; preserve required scoped docs/logging checks and honest validation limitations. Existing project guidance is not overwritten.
+
 ## 0.4.1
 
 - Request detailed provider-supplied activity captions for official OpenAI/Codex Responses reasoning requests through Pi's public provider-payload hook, instead of changing agent-progress commentary.
